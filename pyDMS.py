@@ -171,10 +171,12 @@ class DecisionTreeSharpener(object):
         A list of values indicating which pixel values in the low-resolution
         quality images should be considered as good quality.
         
-    cvHomogeneityThreshold: float (optional, default: 0.25)
+    cvHomogeneityThreshold: float (optional, default: 0)
         A threshold of coeficient of variation below which high-resolution
         pixels resampled to low-resolution are considered homogeneous and
-        usable during the training of the disaggregator.
+        usable during the training of the disaggregator. If threshold is 0 or 
+        negative then it is set automatically such that 80% of pixels are below 
+        it.
         
     movingWindowSize: integer (optional, default: 0)
         The size of local regression moving window in low-resolution pixels. If
@@ -225,7 +227,7 @@ class DecisionTreeSharpener(object):
                  lowResFiles, 
                  lowResQualityFiles = [], 
                  lowResGoodQualityFlags = [], 
-                 cvHomogeneityThreshold = 0.25, 
+                 cvHomogeneityThreshold = 0, 
                  movingWindowSize = 0,  
                  disaggregatingTemperature = False,
                  perLeafLinearRegression = True,
@@ -251,7 +253,14 @@ class DecisionTreeSharpener(object):
         else:
             self.useQuality_LR = False
         
-        self.cvHomogeneityThreshold = cvHomogeneityThreshold        
+        self.cvHomogeneityThreshold = cvHomogeneityThreshold
+        # If threshold is 0 or negative then it is set automatically such that 
+        # 80% of pixels are below it.        
+        if self.cvHomogeneityThreshold <= 0:
+            self.autoAdjustCvThreshold = True
+            self.precentileThreshold = 80
+        else:
+            self.autoAdjustCvThreshold = False
         
         # Moving window size in low resolution pixels
         self.movingWindowSize = float(movingWindowSize)
@@ -305,12 +314,16 @@ class DecisionTreeSharpener(object):
             data_LR = subsetScene_LR.GetRasterBand(1).ReadAsArray()
             gt_LR = subsetScene_LR.GetGeoTransform()
             
-            # Do the same with low res quality file, if provided
+            # Do the same with low res quality file (if provided) and flag
+            # pixels which are considered to be of good quality
             if self.useQuality_LR:
                 quality_LR = gdal.Open(self.lowResQualityFiles[fileNum])
                 subsetQuality_LR = utils.reprojectSubsetLowResScene(scene_HR, quality_LR)
                 subsetQualityMask = subsetQuality_LR.GetRasterBand(1).ReadAsArray()
+                qualityPix = np.in1d(subsetQualityMask.ravel(), self.lowResGoodQualityFlags).reshape(subsetQualityMask.shape)
                 quality_LR = None
+            else:
+                qualityPix = np.ones(data_LR.shape).astype(bool)
             
             # Then resample high res scene to low res pixel size while 
             # extracting sub-low-res-pixel homogeneity statistics
@@ -319,15 +332,6 @@ class DecisionTreeSharpener(object):
             resCV = np.sum(resStd/resMean,2)/resMean.shape[2]
             resCV[np.isnan(resCV)] = 1000
                                  
-            # Good pixels are those where low res data quality is good and 
-            # high res data is homonogenous
-            homogenousPix = np.logical_and(resCV < self.cvHomogeneityThreshold, resCV > 0)
-            if self.useQuality_LR:
-                qualityPix = np.in1d(subsetQualityMask.ravel(), self.lowResGoodQualityFlags).reshape(subsetQualityMask.shape)
-            else:
-                qualityPix = np.ones(homogenousPix.shape).astype(bool)
-            goodPix = np.logical_and(homogenousPix, qualityPix)
-
             windows = []
             extents = []
             # If moving window approach is used (section 2.3 of Gao paper) 
@@ -357,24 +361,41 @@ class DecisionTreeSharpener(object):
             for i, window in enumerate(windows):  
                 rows = slice(window[0], window[1])
                 cols = slice(window[2], window[3])
-                goodPixWindow = goodPix[rows, cols]
+                qualityPixWindow = qualityPix[rows, cols]
+                resCVWindow = resCV[rows, cols]
+                
+                # Good pixels are those where low res data quality is good and 
+                # high res data is homonogenous
+                if self.autoAdjustCvThreshold:
+                    g = np.logical_and.reduce((qualityPixWindow, 
+                                               resCVWindow<1000,
+                                               resCVWindow>0))
+                    if ~np.any(g):
+                        self.cvHomogeneityThreshold = 0
+                    else:    
+                        self.cvHomogeneityThreshold = np.percentile(resCVWindow[g], 
+                                                                    self.precentileThreshold)
+                    print('Homogeneity CV threshold: %.2f' % self.cvHomogeneityThreshold)                                            
+                homogenousPix = np.logical_and(resCVWindow < self.cvHomogeneityThreshold, 
+                                               resCVWindow > 0)
+                goodPix = np.logical_and(homogenousPix, qualityPixWindow)                            
+                
                 goodData_LR[i] = utils.appendNpArray(goodData_LR[i], 
-                                                     data_LR[rows, cols][goodPixWindow])            
+                                                     data_LR[rows, cols][goodPix])            
                 goodData_HR[i] = utils.appendNpArray(goodData_HR[i], 
-                                                     resMean[rows, cols, :][goodPixWindow, :], axis=0)
+                                                     resMean[rows, cols, :][goodPix, :], axis=0)
                                               
                 # Also estimate weight given to each pixel as the inverse of its
                 # heterogeneity            
-                w = 1/resCV[rows, cols][goodPixWindow]
+                w = 1/resCVWindow[goodPix]
                 weight[i] = utils.appendNpArray(weight[i], w)   
                 
                 # Print some stats
-                qualityPixWindow = qualityPix[rows, cols]
                 if np.prod(data_LR[rows, cols][qualityPixWindow].shape) > 0: 
                     percentageUsedPixels = int(float(np.prod(goodData_LR[i].shape)) / 
                                                float(np.prod(data_LR[rows, cols][qualityPixWindow].shape)) * 100)
-                    print('Number of training elements for tree is '+str(np.prod(goodData_LR[i].shape))+
-                          ' representing '+str(percentageUsedPixels)+'% of avaiable data.')
+                    print('Number of training elements for is '+str(np.prod(goodData_LR[i].shape))+
+                          ' representing '+str(percentageUsedPixels)+'% of avaiable low-resolution data.')
                 
             # Close all files 
             scene_HR = None
