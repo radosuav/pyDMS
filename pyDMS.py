@@ -12,7 +12,6 @@ import numpy as np
 from osgeo import gdal, gdalconst
 from sklearn import tree, linear_model, ensemble, preprocessing
 import sklearn.neural_network as ann_sklearn
-import sknn.mlp as ann_sknn 
 
 import pyDMSUtils as utils
 
@@ -802,6 +801,10 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
                                                      disaggregatingTemperature,
                                                      regressorOpt = regressorOpt)
         self.regressionType = regressionType
+        # Move the import of sknn here because this library is not easy to
+        # install but this shouldn't prevent the use of other parts of pyDMS.        
+        if self.regressionType == REG_sknn_ann:
+            import sknn.mlp as ann_sknn 
     
     def _doFit(self, goodData_LR, goodData_HR, weight, local):
         ''' Private function. Fits the neural network.
