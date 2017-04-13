@@ -13,24 +13,23 @@ import pyDMSUtils as utils
 from pyDMS import DecisionTreeSharpener, NeuralNetworkSharpener
 from pyDMS import REG_sknn_ann, REG_sklearn_ann
 
+highResFilename = r"./Example/S2A_MSIL2A_20170116_resample_10m_clip_reflectance.tif"
+lowResFilename = r"./Example/S8_BT_in.tif"    
+lowResMaskFilename = '' 
+outputFilename = r"./Example/S2A_MSIL2A_20170116_LST_tree_resRadiance.tif"    
     
 ##########################################################################################
                     
 if __name__ == "__main__":
 
-    highResFilename = r""
-    lowResFilename = r""    
-    lowResMaskFilename = r""    
-    outputFilename = r""    
-
-    useDecisionTree = False
+    useDecisionTree = True
 
     commonOpts = {"highResFiles":               [highResFilename],
                   "lowResFiles":                [lowResFilename],
-                  "lowResQualityFiles":         [lowResMaskFilename], 
+                  #"lowResQualityFiles":         [lowResMaskFilename], 
                   "lowResGoodQualityFlags":     [255],
-                  "cvHomogeneityThreshold":     0.04,
-                  "movingWindowSize":           15,
+                  "cvHomogeneityThreshold":     0.20,
+                  #"movingWindowSize":           15,
                   "disaggregatingTemperature":  True}
     dtOpts =     {"perLeafLinearRegression":    True,
                   "linearRegressionExtrapolationRatio": 0.25}
@@ -42,10 +41,13 @@ if __name__ == "__main__":
     start_time = time.time() 
 
     if useDecisionTree:
-        opts = dict(commonOpts.items() + dtOpts.items())
+        opts = commonOpts.copy()
+        opts.update(dtOpts)
+        #opts = dict(commonOpts.items() + dtOpts.items())
         disaggregator = DecisionTreeSharpener(**opts)
     else:
-        opts = dict(commonOpts.items() + nnOpts.items())
+        opts = commonOpts.copy()
+        opts.update(nnOpts)
         disaggregator = NeuralNetworkSharpener(**opts)
     
     print("Training regressor...")
@@ -75,4 +77,4 @@ if __name__ == "__main__":
     downsaceldFile = None
     highResFile = None
         
-    print time.time() - start_time, "seconds"
+    print(time.time() - start_time, "seconds")
