@@ -13,23 +13,22 @@ import pyDMSUtils as utils
 from pyDMS import DecisionTreeSharpener, NeuralNetworkSharpener
 from pyDMS import REG_sknn_ann, REG_sklearn_ann
 
+highResFilename = r""
+lowResFilename = r""    
+lowResMaskFilename = r"" 
+outputFilename = r""    
     
 ##########################################################################################
                     
 if __name__ == "__main__":
 
-    highResFilename = r""
-    lowResFilename = r""    
-    lowResMaskFilename = r""    
-    outputFilename = r""    
-
-    useDecisionTree = False
+    useDecisionTree = True
 
     commonOpts = {"highResFiles":               [highResFilename],
                   "lowResFiles":                [lowResFilename],
                   "lowResQualityFiles":         [lowResMaskFilename], 
                   "lowResGoodQualityFlags":     [255],
-                  "cvHomogeneityThreshold":     0.04,
+                  "cvHomogeneityThreshold":     0,
                   "movingWindowSize":           15,
                   "disaggregatingTemperature":  True}
     dtOpts =     {"perLeafLinearRegression":    True,
@@ -42,10 +41,12 @@ if __name__ == "__main__":
     start_time = time.time() 
 
     if useDecisionTree:
-        opts = dict(commonOpts.items() + dtOpts.items())
+        opts = commonOpts.copy()
+        opts.update(dtOpts)
         disaggregator = DecisionTreeSharpener(**opts)
     else:
-        opts = dict(commonOpts.items() + nnOpts.items())
+        opts = commonOpts.copy()
+        opts.update(nnOpts)
         disaggregator = NeuralNetworkSharpener(**opts)
     
     print("Training regressor...")
@@ -75,4 +76,4 @@ if __name__ == "__main__":
     downsaceldFile = None
     highResFile = None
         
-    print time.time() - start_time, "seconds"
+    print(time.time() - start_time, "seconds")
