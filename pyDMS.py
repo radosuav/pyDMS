@@ -683,24 +683,28 @@ class DecisionTreeSharpener(object):
                                                        subsetScene_LR)             
             # Find the residual (difference) between the two
             residual_LR = data_LR - resMean[:, :, 0] 
-
-        # Interpolate gaps
-        imp = preprocessing.Imputer(strategy="mean")
-        residual = imp.fit_transform(residual_LR)
         
         # Smooth the residual and resample to high resolution
-        residual = utils.binomialSmoother(residual)
-        residualScene = utils.resampleWithGdal(residual, 
+        residual = utils.binomialSmoother(residual_LR)
+        residualScene_NN = utils.resampleWithGdal(residual, 
                                                subsetScene_LR.GetGeoTransform(),
                                                downscaledScene.GetGeoTransform(),
                                                subsetScene_LR.GetProjection(),
                                                downscaledScene.GetProjection(),
-                                               resampling = gdalconst.GRA_Bilinear)
-                                       
+                                               resampling = gdal.GRA_NearestNeighbour) 
+        residualScene_BL = utils.resampleWithGdal(residual, 
+                                               subsetScene_LR.GetGeoTransform(),
+                                               downscaledScene.GetGeoTransform(),
+                                               subsetScene_LR.GetProjection(),
+                                               downscaledScene.GetProjection(),
+                                               resampling = gdal.GRA_Bilinear)
+        # Bilinear resampling extrapolates by half a pixel, so need to clean it up                                       
+        residual = residualScene_BL.GetRasterBand(1).ReadAsArray()
+        residual[np.isnan(residualScene_NN.GetRasterBand(1).ReadAsArray())] = np.NaN       
+                               
         # The residual array might be slightly smaller then the downscaled because
         # of the subsetting of the low resolution scene. In that case just pad
         # the missing values with neighbours.
-        residual = residualScene.GetRasterBand(1).ReadAsArray()
         downscaled = downscaledScene.GetRasterBand(1).ReadAsArray()
         if downscaled.shape != residual.shape:
             temp = np.zeros(downscaled.shape)
