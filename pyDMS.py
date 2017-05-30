@@ -480,7 +480,10 @@ class DecisionTreeSharpener(object):
                     self._doPredict(windowInData, self.reg[i])                
         
         # Do the downscailing on the whole input image
-        outFullData = self._doPredict(inData, self.reg[-1])
+        if self.reg[-1] is not None:
+            outFullData = self._doPredict(inData, self.reg[-1])
+        else:
+            outFullData = np.empty((ysize, xsize))*np.nan
         
         # Combine the windowed and whole image regressions
         # If there is no windowed regression just use the whole image regression
