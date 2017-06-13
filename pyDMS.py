@@ -243,15 +243,16 @@ class DecisionTreeSharpener(object):
         if len(self.highResFiles) != len(self.lowResFiles):
             print("There must be a matching high resolution file for each low resolution file")
             raise IOError
+
+        if len(self.lowResQualityFiles) == 0 or \
+           (len(self.lowResQualityFiles) == 1 and self.lowResQualityFiles[0] == ""):
+            self.useQuality_LR = False
+        else:
+            self.useQuality_LR = True
             
-        if len(self.lowResQualityFiles) > 0 and len(self.lowResQualityFiles) != len(self.lowResFiles):
+        if self.useQuality_LR and len(self.lowResQualityFiles) != len(self.lowResFiles):
             print("The number of quality files must be 0 or the same as number of low resolution files")
             raise IOError 
-            
-        if len(self.lowResQualityFiles) > 0:
-            self.useQuality_LR = True
-        else:
-            self.useQuality_LR = False
         
         self.cvHomogeneityThreshold = cvHomogeneityThreshold
         # If threshold is 0 or negative then it is set automatically such that 
