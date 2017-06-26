@@ -134,21 +134,21 @@ class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
 
 class DecisionTreeSharpener(object):
     ''' Decision tree based sharpening (disaggregation) of low-resolution  
-    images using high-resolution images.
-
-    The implementation is mostly based on [Gao2012]. Local (moving window) and
-    global regression decision trees are trained with high-resolution data resampled to
-    low resolution and low-resolution data and those trees are then applied 
-    directly to high-resolution data to obtain high-resolution representaiton
+    images using high-resolution images. The implementation is mostly based on [Gao2012]. 
+    
+    Decision tree based regressor is trained with high-resolution data resampled to
+    low resolution and low-resolution data and then applied 
+    directly to high-resolution data to obtain high-resolution representation
     of the low-resolution data.
     
     The implementation includes selecting training data based on homogeneity
-    statistics and using the homogeneity as weight factor ([Gao2012] 2.2),
+    statistics and using the homogeneity as weight factor ([Gao2012], section 2.2),
     performing linear regression with samples located within each regression
-    tree leaf node ([Gao2012 2.1]), using an ensamble of regression trees 
-    ([Gao2012 2.1]), performing local (moving window) and global regression and
-    combining them based on residuals ([Gao2012 2.3]) and performing residual 
-    analysis and bias correction ([Gao2012 2.4]).
+    tree leaf node ([Gao2012], section 2.1), using an ensemble of regression trees 
+    ([Gao2012], section 2.1), performing local (moving window) and global regression and
+    combining them based on residuals ([Gao2012] section 2.3) and performing residual 
+    analysis and bias correction ([Gao2012], section 2.4)
+
 
     Parameters
     ----------
@@ -728,24 +728,22 @@ class DecisionTreeSharpener(object):
 
 class NeuralNetworkSharpener(DecisionTreeSharpener):
     ''' Neural Network based sharpening (disaggregation) of low-resolution  
-    images using high-resolution images.
-
-    The implementation is mostly based on [Gao2012] as implemented in 
+    images using high-resolution images. The implementation is mostly based on [Gao2012] as implemented in 
     DescisionTreeSharpener except that Decision Tree regressor is replaced by
     Neural Network regressor. 
     
-    Local (moving window) and global regression decision trees are trained with
-    high-resolution data resampled to low resolution and low-resolution data
-    and those trees are then applied directly to high-resolution data to 
-    obtain high-resolution representaiton of the low-resolution data.
+    Nerual network based regressor is trained with high-resolution data resampled to
+    low resolution and low-resolution data and then applied 
+    directly to high-resolution data to obtain high-resolution representation
+    of the low-resolution data.
     
     The implementation includes selecting training data based on homogeneity
-    statistics and using the homogeneity as weight factor ([Gao2012] 2.2),
+    statistics and using the homogeneity as weight factor ([Gao2012], section 2.2),
     performing linear regression with samples located within each regression
-    tree leaf node ([Gao2012 2.1]), using an ensamble of regression trees 
-    ([Gao2012 2.1]), performing local (moving window) and global regression and
-    combining them based on residuals ([Gao2012 2.3]) and performing residual 
-    analysis and bias correction ([Gao2012 2.4]).
+    tree leaf node ([Gao2012], section 2.1), using an ensemble of regression trees 
+    ([Gao2012], section 2.1), performing local (moving window) and global regression and
+    combining them based on residuals ([Gao2012] section 2.3) and performing residual 
+    analysis and bias correction ([Gao2012], section 2.4)
 
     Parameters
     ----------
