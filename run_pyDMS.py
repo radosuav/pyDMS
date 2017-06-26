@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Feb 08 17:16:37 2017
-
 @author: radoslaw guzinski
+Copyright: (C) 2017, Radoslaw Guzinski
 """
 import os
 import time

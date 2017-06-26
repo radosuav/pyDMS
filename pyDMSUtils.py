@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Dec 01 13:54:18 2016
-
 @author: Radoslaw Guzinski
+Copyright: (C) 2017, Radoslaw Guzinski
 """
 
 import math
