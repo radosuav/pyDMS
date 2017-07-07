@@ -574,28 +574,33 @@ class DecisionTreeSharpener(object):
             quality_LR = None
         
         residual_HR, residual_LR, gt_res = self._calculateResidual(scene_HR, scene_LR, quality_LR)
-        residualImage = utils.saveImg(residual_LR,
-                                    gt_res,
-                                    scene_HR.GetProjection(),
-                                    "MEM")
-            
-        if doCorrection:
-            if self.disaggregatingTemperature: 
+        
+        if self.disaggregatingTemperature:
+            if doCorrection:            
                 corrected = (residual_HR + scene_HR.GetRasterBand(1).ReadAsArray()**4)**0.25
                 correctedImage = utils.saveImg(corrected,
                                              scene_HR.GetGeoTransform(),
                                              scene_HR.GetProjection(),
                                              "MEM")
             else:
+                correctedImage = None
+            # Convert residual back to temperature for easier visualisation
+            residual_LR = (residual_LR + 273.15**4)**0.25 - 273.15
+        else:
+            if doCorrection:                
                 corrected = residual_HR + scene_HR.GetRasterBand(1).ReadAsArray()
                 correctedImage = utils.saveImg(corrected,
                                              scene_HR.GetGeoTransform(),
                                              scene_HR.GetProjection(),
-                                             "MEM")
-                
-        else:
-            correctedImage = None
-        
+                                             "MEM")                
+            else:
+                correctedImage = None
+
+        residualImage = utils.saveImg(residual_LR,
+                                      gt_res,
+                                      scene_HR.GetProjection(),
+                                      "MEM")
+
         scene_HR = None
         scene_LR = None
         quality_LR = None        
