@@ -5,6 +5,7 @@ Copyright: (C) 2017, Radoslaw Guzinski
 """
 
 import math
+import os
 
 import numpy as np
 import scipy.ndimage as ndi
@@ -42,16 +43,26 @@ def pix2point(pix, gt):
     return [mx, my]
 
 # save the data to geotiff or memory    
-def saveImg(data, geotransform, proj, outPath, noDataValue = np.nan):
+def saveImg(data, geotransform, proj, outPath, noDataValue = np.nan, fieldNames = []):
     
     # Start the gdal driver for GeoTIFF
     if outPath == "MEM":
         driver = gdal.GetDriverByName("MEM")
         driverOpt = []
+        is_netCDF = False
     else:
-        driver = gdal.GetDriverByName("GTiff")
-        driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=1', 'BIGTIFF=IF_SAFER']  
-    
+        # If the output file has .nc extension then save it as netCDF,
+        # otherwise assume that the output should be a GeoTIFF
+        ext = os.path.splitext(outPath)[1]
+        if ext.lower() == ".nc":
+            driver = gdal.GetDriverByName("netCDF")
+            driverOpt = ["FORMAT=NC2"]
+            is_netCDF = True
+        else:
+            driver = gdal.GetDriverByName("GTiff")
+            driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=1', 'BIGTIFF=IF_SAFER']
+            is_netCDF = False
+
     shape=data.shape
     if len(shape) > 2:
         ds = driver.Create(outPath, shape[1], shape[0], shape[2], gdal.GDT_Float32, driverOpt)
@@ -66,7 +77,21 @@ def saveImg(data, geotransform, proj, outPath, noDataValue = np.nan):
         ds.SetGeoTransform(geotransform)
         ds.GetRasterBand(1).WriteArray(data)
         ds.GetRasterBand(1).SetNoDataValue(noDataValue)
-            
+   
+    # In case of netCDF format use netCDF4 module to assign proper names 
+    # to variables (GDAL can't do this). Also it seems that GDAL has
+    # problems assigning projection to all the bands so fix that.
+    if is_netCDF and fieldNames:
+        from netCDF4 import Dataset
+        ds = None
+        ds = Dataset(outPath, 'a')
+        grid_mapping = ds["Band1"].grid_mapping
+        for i, field in enumerate(fieldNames):
+            ds.renameVariable("Band"+str(i+1), field)
+            ds[field].grid_mapping = grid_mapping
+        ds.close()
+        ds = gdal.Open('NETCDF:"'+outPath+'":'+fieldNames[0])
+        
     print('Saved ' +outPath )
 
     return ds
