@@ -136,12 +136,23 @@ def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg = gdal.GRA
     ysize_HR = highResScene.RasterYSize
     gt_HR = highResScene.GetGeoTransform()
     proj_HR = highResScene.GetProjection()
-    gt_LR = lowResScene.GetGeoTransform()
-
-    # Make the pixel as close as possible to original low resolution while overlapping nicely with the high resolution pixels
+    #gt_LR = lowResScene.GetGeoTransform()
+    
+    # Reproject low res scene to high res scene's projection to get the original  
+    # pixel size in the new projection
+    out = gdal.Warp("", 
+                    lowResScene.GetDescription(),
+                    format = "MEM",
+                    dstSRS = proj_HR, 
+                    resampleAlg = gdal.GRA_NearestNeighbour)
+                   
+    # Make the new LR pixel as close as possible to original low resolution while 
+    # overlapping nicely with the high resolution pixels
+    gt_LR = out.GetGeoTransform() 
     pixSize_HR = [gt_HR[1], math.fabs(gt_HR[5])]
     pixSize_LR = [round(gt_LR[1]/pixSize_HR[0])*pixSize_HR[0], 
                   round(math.fabs(gt_LR[5])/pixSize_HR[0])*pixSize_HR[0]]
+    out = None
     
     # Make the extent such that it does not go outside high resolution extent so that the matrix is the same size as
     # resampled high resolution reflectances in the next step
