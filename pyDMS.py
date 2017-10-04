@@ -324,6 +324,9 @@ class DecisionTreeSharpener(object):
                 quality_LR = None
             else:
                 qualityPix = np.ones(data_LR.shape).astype(bool)
+                
+            # Low resolution pixels with NaN value are always of bad quality    
+            qualityPix = np.logical_and(qualityPix, ~np.isnan(data_LR))
             
             # Then resample high res scene to low res pixel size while 
             # extracting sub-low-res-pixel homogeneity statistics
