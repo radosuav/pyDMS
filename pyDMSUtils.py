@@ -72,7 +72,7 @@ def saveImg(data, geotransform, proj, outPath, noDataValue = np.nan, fieldNames 
             ds.GetRasterBand(i+1).WriteArray(data[:,:,i])  
             ds.GetRasterBand(i+1).SetNoDataValue(noDataValue)
     else:
-        ds = driver.Create(outPath, shape[1], shape[0], 1, gdal.GDT_Float32)
+        ds = driver.Create(outPath, shape[1], shape[0], 1, gdal.GDT_Float32, driverOpt)
         ds.SetProjection(proj)
         ds.SetGeoTransform(geotransform)
         ds.GetRasterBand(1).WriteArray(data)
@@ -121,7 +121,7 @@ def binomialSmoother(data):
     return smoothedData
 
 def appendNpArray(array, data, axis=None):
-    if array == None:
+    if array is None or array.size == 0:
         array = data
     else:
         array = np.append(array, data, axis = axis)
