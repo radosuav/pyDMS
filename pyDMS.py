@@ -334,7 +334,12 @@ class DecisionTreeSharpener(object):
             resMean[resMean==0] = 0.000001
             resCV = np.sum(resStd/resMean,2)/resMean.shape[2]
             resCV[np.isnan(resCV)] = 1000
-                                 
+            
+            # Resampled high resolution pixels where at least one "parameter"
+            # is NaN are also of bad quality
+            resNaN = np.any(np.isnan(resMean), -1)
+            qualityPix = np.logical_and(qualityPix, ~resNaN)            
+                     
             windows = []
             extents = []
             # If moving window approach is used (section 2.3 of Gao paper) 
@@ -519,7 +524,7 @@ class DecisionTreeSharpener(object):
             outData = outWindowData
         
         # Fix NaN's
-        nanInd = np.all(nanInd,-1)            
+        nanInd = np.any(nanInd,-1)            
         outData[nanInd] = np.nan
     
         outImage = utils.saveImg(outData, 
