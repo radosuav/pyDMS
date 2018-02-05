@@ -702,21 +702,17 @@ class DecisionTreeSharpener(object):
         
         # Smooth the residual and resample to high resolution
         residual = utils.binomialSmoother(residual_LR)
-        residualScene_NN = utils.resampleWithGdal(residual, 
-                                               subsetScene_LR.GetGeoTransform(),
-                                               downscaledScene.GetGeoTransform(),
-                                               subsetScene_LR.GetProjection(),
-                                               downscaledScene.GetProjection(),
-                                               resampling = gdal.GRA_NearestNeighbour) 
-        residualScene_BL = utils.resampleWithGdal(residual, 
-                                               subsetScene_LR.GetGeoTransform(),
-                                               downscaledScene.GetGeoTransform(),
-                                               subsetScene_LR.GetProjection(),
-                                               downscaledScene.GetProjection(),
-                                               resampling = gdal.GRA_Bilinear)
+        residualDs = utils.saveImg(residual, subsetScene_LR.GetGeoTransform(), 
+                                   subsetScene_LR.GetProjection(), "MEM")
+        residualScene_NN = utils.resampleWithGdalWarp(residualDs, downscaledScene, resampleAlg = "near")
+        residualScene_BL = utils.resampleWithGdalWarp(residualDs, downscaledScene, resampleAlg = "bilinear")
+        residualDs = None
+
         # Bilinear resampling extrapolates by half a pixel, so need to clean it up                                       
         residual = residualScene_BL.GetRasterBand(1).ReadAsArray()
-        residual[np.isnan(residualScene_NN.GetRasterBand(1).ReadAsArray())] = np.NaN       
+        residual[np.isnan(residualScene_NN.GetRasterBand(1).ReadAsArray())] = np.NaN
+        residualScene_NN  = None
+        residualScene_BL = None
                                
         # The residual array might be slightly smaller then the downscaled because
         # of the subsetting of the low resolution scene. In that case just pad

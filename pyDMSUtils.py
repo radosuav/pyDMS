@@ -12,17 +12,35 @@ import scipy.ndimage as ndi
 
 from osgeo import gdal, gdalconst
 
-def resampleWithGdal(data, gtOrig, gtNew, projInfoOrig, projInfoNew = None, shapeNew = None, outFile = "MEM", resampling = gdalconst.GRA_NearestNeighbour):
-    if not projInfoNew:
-        projInfoNew = projInfoOrig
-    fileOrig = saveImg(data, gtOrig, projInfoOrig, "MEM")
-    if shapeNew is None:        
-        shapeNew = (int(round(data.shape[0]*gtOrig[1]/gtNew[1])), int(round(data.shape[1]*gtOrig[5]/gtNew[5])))
-    fileNew = saveImg(np.empty(shapeNew)*np.nan, gtNew, projInfoNew, outFile)
-    gdal.ReprojectImage(fileOrig, fileNew, projInfoOrig, projInfoNew, resampling)
-    fileOrig = None    
+def getRasterInfo(raster):
+    proj = raster.GetProjection()
+    gt = raster.GetGeoTransform()
+    sizeX = raster.RasterXSize
+    sizeY = raster.RasterYSize
+    extent = [gt[0], gt[3]+gt[5]*sizeY, gt[0]+gt[1]*sizeX, gt[3]]
+    bands = raster.RasterCount
+    return proj, gt, sizeX, sizeY, extent, bands
+
+def resampleWithGdalWarp(srcFile, templateFile, outFile = "", outFormat = "MEM", resampleAlg = "average"):
+    # Get template projection, extent and resolution
+    try:
+        proj, gt, sizeX, sizeY, extent, _ = getRasterInfo(templateFile)
+    except AttributeError:
+        templateDs = gdal.Open(templateFile)
+        proj, gt, sizeX, sizeY, extent, _ = getRasterInfo(templateDs)
+        templateDs = None
     
-    return fileNew
+    # Resample with GDAL warp
+    outDs = gdal.Warp(outFile, 
+                      srcFile,
+                      format = outFormat,
+                      dstSRS = proj,
+                      xRes = gt[1],
+                      yRes = gt[5],
+                      outputBounds = extent,  
+                      resampleAlg = resampleAlg)
+    
+    return outDs
     
 def point2pix(point, gt, upperBound = False):
     mx = point[0]
