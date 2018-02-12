@@ -609,6 +609,9 @@ class DecisionTreeSharpener(object):
                                       scene_HR.GetProjection(),
                                       "MEM")
 
+        print("LR residual bias: "+str(np.nanmean(residual_LR)))
+        print("LR residual RMSD: "+str(np.nanmean(residual_LR**2)**0.5))
+
         scene_HR = None
         scene_LR = None
         quality_LR = None        
