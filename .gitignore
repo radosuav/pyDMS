@@ -48,3 +48,6 @@ Temporary Items
 
 # Compiled Python files
 *.pyc
+build
+dist
+pyDMS.egg-info
