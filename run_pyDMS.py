@@ -8,9 +8,9 @@ import time
 
 from osgeo import gdal
 
-import pyDMSUtils as utils
-from pyDMS import DecisionTreeSharpener, NeuralNetworkSharpener
-from pyDMS import REG_sknn_ann, REG_sklearn_ann
+import pyDMS.pyDMSUtils as utils
+from pyDMS.pyDMS import DecisionTreeSharpener, NeuralNetworkSharpener
+from pyDMS.pyDMS import REG_sknn_ann, REG_sklearn_ann
 
 highResFilename = r""
 lowResFilename = r""

@@ -12,7 +12,7 @@ from osgeo import gdal
 from sklearn import tree, linear_model, ensemble, preprocessing
 import sklearn.neural_network as ann_sklearn
 
-import pyDMSUtils as utils
+import pyDMS.pyDMSUtils as utils
 
 
 REG_sknn_ann = 0
