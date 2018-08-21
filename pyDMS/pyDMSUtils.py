@@ -13,25 +13,34 @@ import scipy.ndimage as ndi
 from osgeo import gdal
 
 
+def openRaster(raster):
+    closeOnExit = False
+    try:
+        raster.GeoProjection()
+        openRaster = raster
+    except AttributeError:
+        openRaster = gdal.Open(raster)
+        closeOnExit = True
+    return openRaster, closeOnExit
+
+
 def getRasterInfo(raster):
-    proj = raster.GetProjection()
-    gt = raster.GetGeoTransform()
-    sizeX = raster.RasterXSize
-    sizeY = raster.RasterYSize
+    r, closeOnExit = openRaster(raster)
+    proj = r.GetProjection()
+    gt = r.GetGeoTransform()
+    sizeX = r.RasterXSize
+    sizeY = r.RasterYSize
     extent = [gt[0], gt[3]+gt[5]*sizeY, gt[0]+gt[1]*sizeX, gt[3]]
-    bands = raster.RasterCount
+    bands = r.RasterCount
+    if closeOnExit:
+        r = None
     return proj, gt, sizeX, sizeY, extent, bands
 
 
 def resampleWithGdalWarp(srcFile, templateFile, outFile="", outFormat="MEM",
                          resampleAlg="average"):
     # Get template projection, extent and resolution
-    try:
-        proj, gt, sizeX, sizeY, extent, _ = getRasterInfo(templateFile)
-    except AttributeError:
-        templateDs = gdal.Open(templateFile)
-        proj, gt, sizeX, sizeY, extent, _ = getRasterInfo(templateDs)
-        templateDs = None
+    proj, gt, sizeX, sizeY, extent, _ = getRasterInfo(templateFile)
 
     # Resample with GDAL warp
     outDs = gdal.Warp(outFile,
@@ -159,10 +168,7 @@ def appendNpArray(array, data, axis=None):
 def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg=gdal.GRA_Bilinear):
 
     # Read the required metadata
-    xsize_HR = highResScene.RasterXSize
-    ysize_HR = highResScene.RasterYSize
-    gt_HR = highResScene.GetGeoTransform()
-    proj_HR = highResScene.GetProjection()
+    proj_HR, gt_HR, xsize_HR, ysize_HR = getRasterInfo(highResScene)[0:4]
 
     # Reproject low res scene to high res scene's projection to get the original
     # pixel size in the new projection
@@ -204,10 +210,8 @@ def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg=gdal.GRA_B
 # statistics. It is assumed that both scenes have the same projection and extent.
 def resampleHighResToLowRes(highResScene, lowResScene):
 
-    gt_HR = highResScene.GetGeoTransform()
-    gt_LR = lowResScene.GetGeoTransform()
-    xSize_LR = lowResScene.RasterXSize
-    ySize_LR = lowResScene.RasterYSize
+    gt_HR = getRasterInfo(highResScene)[1]
+    gt_LR, xSize_LR, ySize_LR = getRasterInfo(lowResScene)[1:4]
 
     aggregatedMean = np.zeros((ySize_LR,
                                xSize_LR,
