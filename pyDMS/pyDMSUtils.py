@@ -16,7 +16,7 @@ from osgeo import gdal
 def openRaster(raster):
     closeOnExit = False
     try:
-        raster.GeoProjection()
+        raster.GetProjection()
         openRaster = raster
     except AttributeError:
         openRaster = gdal.Open(raster)
