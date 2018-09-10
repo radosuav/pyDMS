@@ -819,6 +819,11 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
         Options to pass to neural network regressor constructor See links in
         regressionType parameter description for details.
 
+    baggingRegressorOpt: dictionary (optional, default: {})
+        Options to pass to BaggingRegressor constructor. See
+        http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html
+        for possibilities.
+
 
     Returns
     -------
