@@ -841,7 +841,8 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
                  movingWindowSize=0,
                  disaggregatingTemperature=False,
                  regressionType=REG_sknn_ann,
-                 regressorOpt={}):
+                 regressorOpt={},
+                 baggingRegressorOpt={}):
 
         super(NeuralNetworkSharpener, self).__init__(highResFiles,
                                                      lowResFiles,
@@ -850,7 +851,8 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
                                                      cvHomogeneityThreshold,
                                                      movingWindowSize,
                                                      disaggregatingTemperature,
-                                                     regressorOpt=regressorOpt)
+                                                     regressorOpt=regressorOpt,
+                                                     baggingRegressorOpt=baggingRegressorOpt)
         self.regressionType = regressionType
         # Move the import of sknn here because this library is not easy to
         # install but this shouldn't prevent the use of other parts of pyDMS.
@@ -877,12 +879,12 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
             self.regressorOpt.pop('hidden_layer_sizes')
             output_layer = ann_sknn.Layer('Linear', units=1)
             layers.append(output_layer)
-            reg = ann_sknn.Regressor(layers, **self.regressorOpt)
+            baseRegressor = ann_sknn.Regressor(layers, **self.regressorOpt)
         else:
-            reg= ann_sklearn.MLPRegressor(**self.regressorOpt)
+            baseRegressor = ann_sklearn.MLPRegressor(**self.regressorOpt)
 
-        reg = reg.fit(HR_scaler.transform(goodData_HR),
-                      LR_scaler.transform(goodData_LR))
+        reg = ensemble.BaggingRegressor(baseRegressor, **self.baggingRegressorOpt)
+        reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
 
         return {"reg": reg, "HR_scaler": HR_scaler, "LR_scaler": LR_scaler}
 
