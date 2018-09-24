@@ -872,7 +872,7 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
         # neural network approach
         print('Fitting neural network')
         HR_scaler = preprocessing.StandardScaler().fit(goodData_HR)
-        LR_scaler = preprocessing.StandardScaler().fit(goodData_LR)
+        LR_scaler = preprocessing.StandardScaler().fit(goodData_LR.reshape(-1, 1))
         if self.regressionType == REG_sknn_ann:
             layers = []
             if 'hidden_layer_sizes' in self.regressorOpt.keys():
@@ -887,6 +887,9 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
             baseRegressor = ann_sknn.Regressor(layers, **self.regressorOpt)
         else:
             baseRegressor = ann_sklearn.MLPRegressor(**self.regressorOpt)
+
+        # NN regressors do not support sample weights.
+        weight = None
 
         reg = ensemble.BaggingRegressor(baseRegressor, **self.baggingRegressorOpt)
         reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
