@@ -871,8 +871,10 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
         # Once all the samples have been picked build the regression using
         # neural network approach
         print('Fitting neural network')
-        HR_scaler = preprocessing.StandardScaler().fit(goodData_HR)
-        LR_scaler = preprocessing.StandardScaler().fit(goodData_LR.reshape(-1, 1))
+        HR_scaler = preprocessing.StandardScaler()
+        data_HR = HR_scaler.fit_transform(goodData_HR)
+        LR_scaler = preprocessing.StandardScaler()
+        data_LR = LR_scaler.fit_transform(goodData_LR.reshape(-1, 1))
         if self.regressionType == REG_sknn_ann:
             layers = []
             if 'hidden_layer_sizes' in self.regressorOpt.keys():
@@ -892,7 +894,7 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
         weight = None
 
         reg = ensemble.BaggingRegressor(baseRegressor, **self.baggingRegressorOpt)
-        reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
+        reg = reg.fit(data_HR, data_LR, sample_weight=weight)
 
         return {"reg": reg, "HR_scaler": HR_scaler, "LR_scaler": LR_scaler}
 
