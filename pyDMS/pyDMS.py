@@ -473,7 +473,10 @@ class DecisionTreeSharpener(object):
         inData = np.zeros((highResFile.RasterYSize, highResFile.RasterXSize,
                            highResFile.RasterCount))
         for band in range(highResFile.RasterCount):
-            inData[:, :, band] = highResFile.GetRasterBand(band+1).ReadAsArray()
+            data = highResFile.GetRasterBand(band+1).ReadAsArray().astype(float)
+            no_data = highResFile.GetRasterBand(band+1).GetNoDataValue()
+            data[data == no_data] = np.nan
+            inData[:, :, band] = data
         gt = highResFile.GetGeoTransform()
 
         shape = inData.shape

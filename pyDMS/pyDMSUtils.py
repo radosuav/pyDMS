@@ -225,7 +225,9 @@ def resampleHighResToLowRes(highResScene, lowResScene):
     # deviation when aggregated to the low resolution
     for band in range(highResScene.RasterCount):
         data_HR = highResScene.GetRasterBand(band+1).ReadAsArray(0, 0, pixGroup[1]*xSize_LR,
-                                                                 pixGroup[0]*ySize_LR)
+                                                                 pixGroup[0]*ySize_LR).astype(float)
+        no_data = highResScene.GetRasterBand(band+1).GetNoDataValue()
+        data_HR[data_HR == no_data] = np.nan
         t = data_HR.reshape(ySize_LR, pixGroup[0], xSize_LR, pixGroup[1])
         t = t.transpose(0, 2, 1, 3).reshape(ySize_LR, xSize_LR, pixGroup[0]*pixGroup[1])
         aggregatedMean[:, :, band] = np.nanmean(t, axis=-1)
