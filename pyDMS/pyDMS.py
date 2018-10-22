@@ -654,6 +654,8 @@ class DecisionTreeSharpener(object):
                 tree.DecisionTreeRegressor(**self.regressorOpt)
 
         reg = ensemble.BaggingRegressor(baseRegressor, **self.baggingRegressorOpt)
+        if goodData_HR.shape[0] <= 1:
+            reg.max_samples = 1.0
         reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
 
         return reg
@@ -897,7 +899,9 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
         weight = None
 
         reg = ensemble.BaggingRegressor(baseRegressor, **self.baggingRegressorOpt)
-        reg = reg.fit(data_HR, data_LR, sample_weight=weight)
+        if data_HR.shape[0] <= 1:
+            reg.max_samples = 1.0
+        reg = reg.fit(data_HR, np.ravel(data_LR), sample_weight=weight)
 
         return {"reg": reg, "HR_scaler": HR_scaler, "LR_scaler": LR_scaler}
 
