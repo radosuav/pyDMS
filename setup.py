@@ -70,4 +70,5 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3"],
     keywords             = ['DMS', 'sata mining sharpener', 'image sharpening', 'disaggregation',
-                            'Remote Sensing'])
+                            'Remote Sensing'],
+    zip_safe             = False)
