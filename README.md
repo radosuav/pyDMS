@@ -24,7 +24,7 @@ To install, download the project to your local system, enter the download direct
 
 For usage template see [run_pyDMS.py](/run_pyDMS.py).
 
-Copyright: (C) 2017, Radoslaw Guzinski
+Copyright: (C) 2019 Radoslaw Guzinski and contributors.
 
 ## References
 
@@ -32,11 +32,13 @@ Copyright: (C) 2017, Radoslaw Guzinski
        Mining Approach for Sharpening Thermal Satellite Imagery over Land. 
        Remote Sensing, 4(11), 3287–3319. https://doi.org/10.3390/rs4113287
        
+* [Guzinski2019] Guzinski, R., & Nieto, H. (2019). Evaluating the feasibility of using Sentinel-2 and Sentinel-3 satellites for high-resolution evapotranspiration estimations. Remote Sensing of Environment, 221, 157–172. https://doi.org/10.1016/j.rse.2018.11.019
+
 ## License
 
 pyDMS: a Python Data Mining Sharpener implementation
 
-Copyright 2018 Radoslaw Guzinski and contributors.
+Copyright 2019 Radoslaw Guzinski and contributors.
     
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
