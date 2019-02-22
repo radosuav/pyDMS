@@ -10,6 +10,7 @@ import os
 import numpy as np
 from osgeo import gdal
 from sklearn import tree, linear_model, ensemble, preprocessing
+from sklearn.ensemble.forest import ForestRegressor
 import sklearn.neural_network as ann_sklearn
 
 import pyDMS.pyDMSUtils as utils
@@ -17,6 +18,52 @@ import pyDMS.pyDMSUtils as utils
 
 REG_sknn_ann = 0
 REG_sklearn_ann = 1
+
+
+class RandomForestRegressorWLLR(ForestRegressor):
+    def __init__(self,
+                 n_estimators='warn',
+                 criterion="mse",
+                 max_depth=None,
+                 min_samples_split=2,
+                 min_samples_leaf=1,
+                 min_weight_fraction_leaf=0.,
+                 max_features="auto",
+                 max_leaf_nodes=None,
+                 min_impurity_decrease=0.,
+                 min_impurity_split=None,
+                 bootstrap=True,
+                 oob_score=False,
+                 n_jobs=None,
+                 random_state=None,
+                 verbose=0,
+                 warm_start=False,
+                 base_estimator=tree.DecisionTreeRegressor()
+                 ):
+        super().__init__(
+            base_estimator=base_estimator,
+            n_estimators=n_estimators,
+            estimator_params=("criterion", "max_depth", "min_samples_split",
+                              "min_samples_leaf", "min_weight_fraction_leaf",
+                              "max_features", "max_leaf_nodes",
+                              "min_impurity_decrease", "min_impurity_split",
+                              "random_state"),
+            bootstrap=bootstrap,
+            oob_score=oob_score,
+            n_jobs=n_jobs,
+            random_state=random_state,
+            verbose=verbose,
+            warm_start=warm_start)
+
+        self.criterion = criterion
+        self.max_depth = max_depth
+        self.min_samples_split = min_samples_split
+        self.min_samples_leaf = min_samples_leaf
+        self.min_weight_fraction_leaf = min_weight_fraction_leaf
+        self.max_features = max_features
+        self.max_leaf_nodes = max_leaf_nodes
+        self.min_impurity_decrease = min_impurity_decrease
+        self.min_impurity_split = min_impurity_split
 
 
 class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
@@ -653,7 +700,7 @@ class DecisionTreeSharpener(object):
             baseRegressor = \
                 tree.DecisionTreeRegressor(**self.regressorOpt)
 
-        reg = ensemble.BaggingRegressor(baseRegressor, **self.baggingRegressorOpt)
+        reg = RandomForestRegressorWLLR(base_estimator=baseRegressor)
         if goodData_HR.shape[0] <= 1:
             reg.max_samples = 1.0
         reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
