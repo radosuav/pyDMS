@@ -14,7 +14,7 @@ from pyDMS.pyDMS import REG_sknn_ann, REG_sklearn_ann
 
 highResFilename = r"C:\Users\pako\Downloads\s2reprojected30m-2.tif"
 lowResFilename = r"C:\Users\pako\Downloads\S3A_20170517T093144_Sobrino_lst_nadir_1km__fromNdvi_1km.tif"
-outputFilename = r"C:\Users\pako\output-xgb-global.tif"
+outputFilename = r"C:\Users\pako\output-rf-10.tif"
 
 ##########################################################################################
 
@@ -27,11 +27,11 @@ if __name__ == "__main__":
                   "cvHomogeneityThreshold":     0,
                   "movingWindowSize":           0,
                   "disaggregatingTemperature":  True}
-    dtOpts =     {"method": "xgbi",
-                  "perLeafLinearRegression":    True,
+    dtOpts =     {"method": "rf",
+                  "perLeafLinearRegression":    False,
                   "linearRegressionExtrapolationRatio": 0.25}
     ensembleOpts = {"n_jobs": 4,
-                    "n_estimators": 100}
+                    "n_estimators": 10}
     sknnOpts =   {'hidden_layer_sizes':         (10,),
                   'activation':                 'tanh'}
     nnOpts =     {"regressionType":             REG_sklearn_ann,
