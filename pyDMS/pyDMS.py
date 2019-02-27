@@ -12,6 +12,7 @@ from osgeo import gdal
 from sklearn import tree, linear_model, ensemble, preprocessing
 from sklearn.ensemble.forest import ForestRegressor
 import sklearn.neural_network as ann_sklearn
+import xgboost
 
 import pyDMS.pyDMSUtils as utils
 
@@ -87,13 +88,38 @@ class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
     -------
     None
     '''
-    def __init__(self, linearRegressionExtrapolationRatio=0.25, decisionTreeRegressorOpt={}):
-        super(DecisionTreeRegressorWithLinearLeafRegression, self).__init__(**decisionTreeRegressorOpt)
-        self.decisionTreeRegressorOpt = decisionTreeRegressorOpt
+    def __init__(self,
+                 criterion="mse",
+                 splitter="best",
+                 max_depth=None,
+                 min_samples_split=2,
+                 min_samples_leaf=1,
+                 min_weight_fraction_leaf=0.,
+                 max_features=None,
+                 random_state=None,
+                 max_leaf_nodes=None,
+                 min_impurity_decrease=0.,
+                 min_impurity_split=None,
+                 presort=False,
+                 linearRegressionExtrapolationRatio=0.25):
+        super(DecisionTreeRegressorWithLinearLeafRegression, self).__init__(
+            criterion=criterion,
+            splitter=splitter,
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            min_samples_leaf=min_samples_leaf,
+            min_weight_fraction_leaf=min_weight_fraction_leaf,
+            max_features=max_features,
+            random_state=random_state,
+            max_leaf_nodes=max_leaf_nodes,
+            min_impurity_decrease=min_impurity_decrease,
+            min_impurity_split=min_impurity_split,
+            presort=presort
+            )
         self.leafParameters = {}
         self.linearRegressionExtrapolationRatio = linearRegressionExtrapolationRatio
 
-    def fit(self, X, y, sample_weight, fitOpt={}):
+    def fit(self, X, y, sample_weight,  check_input=False, fitOpt={}):
         ''' Build a decision tree regressor from the training set (X, y).
 
         Parameters
@@ -123,7 +149,8 @@ class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
         '''
 
         # Fit a normal regression tree
-        super(DecisionTreeRegressorWithLinearLeafRegression, self).fit(X, y, sample_weight,
+        super(DecisionTreeRegressorWithLinearLeafRegression, self).fit(X, y,
+                                                                       sample_weight,
                                                                        **fitOpt)
 
         # Create a linear regression for all input points which fall into
@@ -133,14 +160,14 @@ class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
         for value in leafValues:
             ind = predictedValues == value
             leafLinearRegrsion = linear_model.BayesianRidge()
-            leafLinearRegrsion.fit(X[ind, :], y[ind])
+            leafLinearRegrsion.fit(X[ind, :], y[ind].ravel())
             self.leafParameters[value] = {"linearRegression": leafLinearRegrsion,
                                           "max": np.max(y[ind]),
                                           "min": np.min(y[ind])}
 
         return self
 
-    def predict(self, X, predictOpt={}):
+    def predict(self, X, predictOpt={}, check_input=False):
         ''' Predict class or regression value for X.
 
         Parameters
@@ -254,9 +281,11 @@ class DecisionTreeSharpener(object):
         for possibilities. Note that max_leaf_nodes and min_samples_leaf
         parameters will beoverwritten in the code.
 
-    baggingRegressorOpt: dictionary (optional, default: {})
-        Options to pass to BaggingRegressor constructor. See
+    ensembleOpt: dictionary (optional, default: {})
+        Options to pass to the selected ensemble constructor. See
         http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html
+        https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
+        https://xgboost.readthedocs.io/en/latest/python/python_api.html
         for possibilities.
 
     Returns
@@ -278,10 +307,11 @@ class DecisionTreeSharpener(object):
                  cvHomogeneityThreshold=0,
                  movingWindowSize=0,
                  disaggregatingTemperature=False,
+                 method="dt",
                  perLeafLinearRegression=True,
                  linearRegressionExtrapolationRatio=0.25,
                  regressorOpt={},
-                 baggingRegressorOpt={}):
+                 ensembleOpt={}):
 
         self.highResFiles = highResFiles
         self.lowResFiles = lowResFiles
@@ -327,8 +357,12 @@ class DecisionTreeSharpener(object):
         self.perLeafLinearRegression = perLeafLinearRegression
         self.linearRegressionExtrapolationRatio = linearRegressionExtrapolationRatio
 
+        # Chosen machine learning method
+        # Options: oneof ["dt", "rf", "xgb"]
+        self.method = method
+
         self.regressorOpt = regressorOpt
-        self.baggingRegressorOpt = baggingRegressorOpt
+        self.ensembleOpt = ensembleOpt
 
     def trainSharpener(self):
         ''' Train the sharpener using high- and low-resolution input files
@@ -694,13 +728,25 @@ class DecisionTreeSharpener(object):
         # DecisionTreeRegressor. Otherwise use the standard one.
         if self.perLeafLinearRegression:
             baseRegressor = \
-                DecisionTreeRegressorWithLinearLeafRegression(self.linearRegressionExtrapolationRatio,
-                                                              self.regressorOpt)
+                DecisionTreeRegressorWithLinearLeafRegression(
+                    **self.regressorOpt,
+                    linearRegressionExtrapolationRatio=self.linearRegressionExtrapolationRatio
+                )
         else:
             baseRegressor = \
                 tree.DecisionTreeRegressor(**self.regressorOpt)
-
-        reg = RandomForestRegressorWLLR(base_estimator=baseRegressor)
+        if self.method == "dt":
+            reg = ensemble.BaggingRegressor(baseRegressor, **self.ensembleOpt)
+        elif self.method == "rf":
+            reg = RandomForestRegressorWLLR(
+                base_estimator=baseRegressor,
+                **self.ensembleOpt,
+                **self.regressorOpt
+                )
+        elif self.method == "xgb":
+            reg = xgboost.XGBRegressor(**self.ensembleOpt)
+        else:
+            raise TypeError("Method should be one of dt, rf or xgb")
         if goodData_HR.shape[0] <= 1:
             reg.max_samples = 1.0
         reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
