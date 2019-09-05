@@ -496,8 +496,10 @@ class DecisionTreeSharpener(object):
                 [maxX, maxY] = utils.point2pix(extent[1], gt)  # LR
                 [maxX, maxY] = [min(maxX, xsize), min(maxY, ysize)]
                 windowInData = inData[minY:maxY, minX:maxX, :]
-                outWindowData[minY:maxY, minX:maxX] = \
-                    self._doPredict(windowInData, self.reg[i])
+
+                if windowInData.size != 0:
+                    outWindowData[minY:maxY, minX:maxX] = \
+                        self._doPredict(windowInData, self.reg[i])
 
         # Do the downscailing on the whole input image
         if self.reg[-1] is not None:
