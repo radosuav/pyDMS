@@ -723,16 +723,15 @@ class DecisionTreeSharpener(object):
         residual = utils.binomialSmoother(residual_LR)
         residualDs = utils.saveImg(residual, subsetScene_LR.GetGeoTransform(),
                                    subsetScene_LR.GetProjection(), "MEM")
-        residualScene_NN = utils.resampleWithGdalWarp(residualDs, downscaledScene,
-                                                      resampleAlg="near")
         residualScene_BL = utils.resampleWithGdalWarp(residualDs, downscaledScene,
                                                       resampleAlg="bilinear")
         residualDs = None
 
-        # Bilinear resampling extrapolates by half a pixel, so need to clean it up
         residual = residualScene_BL.GetRasterBand(1).ReadAsArray()
-        residual[np.isnan(residualScene_NN.GetRasterBand(1).ReadAsArray())] = np.NaN
-        residualScene_NN = None
+        # Sometimes there can be 1 HR pixel NaN border arond LR invalid pixels due to resampling.
+        # Fuction below fixes this. Image border pixels are excluded due to numba stencil
+        # limitations.
+        residual[1:-1, 1:-1] = utils.removeEdgeNaNs(residual)[1:-1, 1:-1]
         residualScene_BL = None
 
         # The residual array might be slightly smaller then the downscaled because
