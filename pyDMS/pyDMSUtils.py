@@ -78,15 +78,28 @@ def pix2point(pix, gt):
 
 # save the data to geotiff or memory
 def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]):
-
-    # Start the gdal driver for GeoTIFF
-    if outPath == "MEM":
-        driver = gdal.GetDriverByName("MEM")
-        driverOpt = []
-        is_netCDF = False
+    
+    # Save to memory first
+    memDriver = gdal.GetDriverByName("MEM")
+    shape = data.shape
+    if len(shape) > 2:
+        ds = memDriver.Create("MEM", shape[1], shape[0], shape[2], gdal.GDT_Float32)
+        ds.SetProjection(proj)
+        ds.SetGeoTransform(geotransform)
+        for i in range(shape[2]):
+            ds.GetRasterBand(i+1).WriteArray(data[:, :, i])
+            ds.GetRasterBand(i+1).SetNoDataValue(noDataValue)
     else:
+        ds = memDriver.Create("MEM", shape[1], shape[0], 1, gdal.GDT_Float32)
+        ds.SetProjection(proj)
+        ds.SetGeoTransform(geotransform)
+        ds.GetRasterBand(1).WriteArray(data)
+        ds.GetRasterBand(1).SetNoDataValue(noDataValue)
+    
+    # Save to file if required
+    if outPath != "MEM":
         # If the output file has .nc extension then save it as netCDF,
-        # otherwise assume that the output should be a GeoTIFF
+        # otherwise assume that the output should be a GeoTIFF (COG)
         ext = os.path.splitext(outPath)[1]
         if ext.lower() == ".nc":
             driver = gdal.GetDriverByName("netCDF")
@@ -96,22 +109,9 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]
             driver = gdal.GetDriverByName("COG")
             driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=YES', 'BIGTIFF=IF_SAFER']
             is_netCDF = False
+        ds = driver.CreateCopy(outPath, ds, True, driverOpt)
 
-    shape = data.shape
-    if len(shape) > 2:
-        ds = driver.Create(outPath, shape[1], shape[0], shape[2], gdal.GDT_Float32, driverOpt)
-        ds.SetProjection(proj)
-        ds.SetGeoTransform(geotransform)
-        for i in range(shape[2]):
-            ds.GetRasterBand(i+1).WriteArray(data[:, :, i])
-            ds.GetRasterBand(i+1).SetNoDataValue(noDataValue)
-    else:
-        ds = driver.Create(outPath, shape[1], shape[0], 1, gdal.GDT_Float32, driverOpt)
-        ds.SetProjection(proj)
-        ds.SetGeoTransform(geotransform)
-        ds.GetRasterBand(1).WriteArray(data)
-        ds.GetRasterBand(1).SetNoDataValue(noDataValue)
-
+    
     # In case of netCDF format use netCDF4 module to assign proper names
     # to variables (GDAL can't do this). Also it seems that GDAL has
     # problems assigning projection to all the bands so fix that.
