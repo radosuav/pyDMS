@@ -93,8 +93,8 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]
             driverOpt = ["FORMAT=NC2"]
             is_netCDF = True
         else:
-            driver = gdal.GetDriverByName("GTiff")
-            driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=1', 'BIGTIFF=IF_SAFER']
+            driver = gdal.GetDriverByName("COG")
+            driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=YES', 'BIGTIFF=IF_SAFER']
             is_netCDF = False
 
     shape = data.shape
