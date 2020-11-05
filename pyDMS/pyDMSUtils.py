@@ -78,8 +78,9 @@ def pix2point(pix, gt):
 
 # save the data to geotiff or memory
 def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]):
-    
+
     # Save to memory first
+    is_netCDF = False
     memDriver = gdal.GetDriverByName("MEM")
     shape = data.shape
     if len(shape) > 2:
@@ -95,7 +96,7 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]
         ds.SetGeoTransform(geotransform)
         ds.GetRasterBand(1).WriteArray(data)
         ds.GetRasterBand(1).SetNoDataValue(noDataValue)
-    
+
     # Save to file if required
     if outPath != "MEM":
         # If the output file has .nc extension then save it as netCDF,
@@ -108,10 +109,8 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]
         else:
             driver = gdal.GetDriverByName("COG")
             driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=YES', 'BIGTIFF=IF_SAFER']
-            is_netCDF = False
         ds = driver.CreateCopy(outPath, ds, True, driverOpt)
 
-    
     # In case of netCDF format use netCDF4 module to assign proper names
     # to variables (GDAL can't do this). Also it seems that GDAL has
     # problems assigning projection to all the bands so fix that.
