@@ -77,7 +77,7 @@ def pix2point(pix, gt):
 
 
 # save the data to geotiff or memory
-def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]):
+def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
 
     # Save to memory first
     is_netCDF = False
@@ -89,13 +89,11 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]
         ds.SetGeoTransform(geotransform)
         for i in range(shape[2]):
             ds.GetRasterBand(i+1).WriteArray(data[:, :, i])
-            ds.GetRasterBand(i+1).SetNoDataValue(noDataValue)
     else:
         ds = memDriver.Create("MEM", shape[1], shape[0], 1, gdal.GDT_Float32)
         ds.SetProjection(proj)
         ds.SetGeoTransform(geotransform)
         ds.GetRasterBand(1).WriteArray(data)
-        ds.GetRasterBand(1).SetNoDataValue(noDataValue)
 
     # Save to file if required
     if outPath != "MEM":
@@ -103,27 +101,27 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=np.nan, fieldNames=[]
         # otherwise assume that the output should be a GeoTIFF (COG)
         ext = os.path.splitext(outPath)[1]
         if ext.lower() == ".nc":
-            driver = gdal.GetDriverByName("netCDF")
+            fileFormat = "netCDF"
             driverOpt = ["FORMAT=NC2"]
             is_netCDF = True
         else:
-            driver = gdal.GetDriverByName("COG")
+            fileFormat = "COG"
             driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=YES', 'BIGTIFF=IF_SAFER']
-        ds = driver.CreateCopy(outPath, ds, True, driverOpt)
-
-    # In case of netCDF format use netCDF4 module to assign proper names
-    # to variables (GDAL can't do this). Also it seems that GDAL has
-    # problems assigning projection to all the bands so fix that.
-    if is_netCDF and fieldNames:
-        from netCDF4 import Dataset
-        ds = None
-        ds = Dataset(outPath, 'a')
-        grid_mapping = ds["Band1"].grid_mapping
-        for i, field in enumerate(fieldNames):
-            ds.renameVariable("Band"+str(i+1), field)
-            ds[field].grid_mapping = grid_mapping
-        ds.close()
-        ds = gdal.Open('NETCDF:"'+outPath+'":'+fieldNames[0])
+        ds = gdal.Translate(outPath, ds, format=fileFormat, creationOptions=driverOpt,
+                            noData=noDataValue)
+        # In case of netCDF format use netCDF4 module to assign proper names
+        # to variables (GDAL can't do this). Also it seems that GDAL has
+        # problems assigning projection to all the bands so fix that.
+        if is_netCDF and fieldNames:
+            from netCDF4 import Dataset
+            ds = None
+            ds = Dataset(outPath, 'a')
+            grid_mapping = ds["Band1"].grid_mapping
+            for i, field in enumerate(fieldNames):
+                ds.renameVariable("Band"+str(i+1), field)
+                ds[field].grid_mapping = grid_mapping
+            ds.close()
+            ds = gdal.Open('NETCDF:"'+outPath+'":'+fieldNames[0])
 
     print('Saved ' + outPath)
 
