@@ -107,8 +107,19 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
         else:
             fileFormat = "COG"
             driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=YES', 'BIGTIFF=IF_SAFER']
-        ds = gdal.Translate(outPath, ds, format=fileFormat, creationOptions=driverOpt,
-                            noData=noDataValue)
+        out_ds = gdal.Translate(outPath, ds, format=fileFormat, creationOptions=driverOpt,
+                                noData=noDataValue)
+        # If GDAL driers for other formats do not exist then default to GeoTiff
+        if out_ds is None:
+            print("Warning: Selected GDAL driver is not supported! Saving as GeoTiff!")
+            fileFormat = "GTiff"
+            driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=1', 'BIGTIFF=IF_SAFER']
+            is_netCDF = False
+            ds = gdal.Translate(outPath, ds, format=fileFormat, creationOptions=driverOpt,
+                                noData=noDataValue)
+        else:
+            ds = out_ds
+
         # In case of netCDF format use netCDF4 module to assign proper names
         # to variables (GDAL can't do this). Also it seems that GDAL has
         # problems assigning projection to all the bands so fix that.
