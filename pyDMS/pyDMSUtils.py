@@ -96,7 +96,9 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
         ds.GetRasterBand(1).WriteArray(data)
 
     # Save to file if required
-    if outPath != "MEM":
+    if outPath == "MEM":
+        ds.GetRasterBand(1).SetNoDataValue(noDataValue)
+    else:
         # If the output file has .nc extension then save it as netCDF,
         # otherwise assume that the output should be a GeoTIFF (COG)
         ext = os.path.splitext(outPath)[1]
