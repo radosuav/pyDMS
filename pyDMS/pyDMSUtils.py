@@ -112,7 +112,7 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
             fileFormat = "COG"
             driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=YES', 'BIGTIFF=IF_SAFER']
         out_ds = gdal.Translate(outPath, ds, format=fileFormat, creationOptions=driverOpt,
-                                noData=noDataValue)
+                                noData=noDataValue, stats=True)
         # If GDAL driers for other formats do not exist then default to GeoTiff
         if out_ds is None:
             print("Warning: Selected GDAL driver is not supported! Saving as GeoTiff!")
@@ -120,7 +120,7 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
             driverOpt = ['COMPRESS=DEFLATE', 'PREDICTOR=1', 'BIGTIFF=IF_SAFER']
             is_netCDF = False
             ds = gdal.Translate(outPath, ds, format=fileFormat, creationOptions=driverOpt,
-                                noData=noDataValue)
+                                noData=noDataValue, stats=True)
         else:
             ds = out_ds
 
