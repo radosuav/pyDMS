@@ -185,11 +185,14 @@ def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg=gdal.GRA_B
 
     # Reproject low res scene to high res scene's projection to get the original
     # pixel size in the new projection
+    lowRes, close = openRaster(lowResScene)
     out = gdal.Warp("",
-                    lowResScene.GetDescription(),
+                    lowRes.GetDescription(),
                     format="MEM",
                     dstSRS=proj_HR,
                     resampleAlg=gdal.GRA_NearestNeighbour)
+    if close:
+        lowRes = None
 
     # Now subset to high resolution scene extent while not shifting pixels
     gt_LR = getRasterInfo(out)[1]
@@ -212,6 +215,7 @@ def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg=gdal.GRA_B
 def resampleHighResToLowRes(highResScene, lowResScene):
 
     gt_HR = getRasterInfo(highResScene)[1]
+    bands_HR = getRasterInfo(highResScene)[5]
     gt_LR, xSize_LR, ySize_LR = getRasterInfo(lowResScene)[1:4]
     xRes_HR = gt_HR[1]
     yRes_HR = abs(gt_HR[5])
@@ -220,16 +224,19 @@ def resampleHighResToLowRes(highResScene, lowResScene):
 
     aggregatedMean = np.zeros((ySize_LR,
                                xSize_LR,
-                               highResScene.RasterCount))
+                               bands_HR))
     aggregatedStd = np.zeros(aggregatedMean.shape)
 
     # Go through all the high res bands and calculate mean and standard
     # deviation when aggregated to the low resolution
-    for band in range(highResScene.RasterCount):
-        bandData_HR = highResScene.GetRasterBand(band+1).ReadAsArray()
+    highRes, close = openRaster(highResScene)
+    for band in range(bands_HR):
+        bandData_HR = highRes.GetRasterBand(band+1).ReadAsArray()
         aggregatedMean[:, :, band], aggregatedStd[:, :, band] =\
             _resampleHighResToLowRes(bandData_HR, ySize_LR, yRes_LR, yRes_HR, xSize_LR, xRes_LR,
                                      xRes_HR, gt_HR, gt_LR)
+    if close:
+        highRes = None
     return aggregatedMean, aggregatedStd
 
 
