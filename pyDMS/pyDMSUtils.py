@@ -12,6 +12,7 @@ import scipy.ndimage as ndi
 from numba import njit, stencil
 
 from osgeo import gdal
+from pyproj import Proj, Transformer
 
 
 def openRaster(raster):
@@ -182,29 +183,35 @@ def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg=gdal.GRA_B
 
     # Read the required metadata
     proj_HR, gt_HR, xsize_HR, ysize_HR, extent = getRasterInfo(highResScene)[0:5]
+    proj_LR, gt_LR, xsize_LR, ysize_LR = getRasterInfo(lowResScene)[0:4]
 
-    # Reproject low res scene to high res scene's projection to get the original
-    # pixel size in the new projection
-    lowRes, close = openRaster(lowResScene)
-    out = gdal.Warp("",
-                    lowRes.GetDescription(),
-                    format="MEM",
-                    dstSRS=proj_HR,
-                    resampleAlg=gdal.GRA_NearestNeighbour)
-    if close:
-        lowRes = None
+    # Transform "middle pixel" and "middle pixel + 1" between LR and HR projections
+    # to obtain LR resolution in HR projection. This method can handle different
+    # x and y resolution
+    midPix = [int(xsize_LR/2), int(ysize_LR/2)]
+    midPix_2 = [midPix[0]+1, midPix[1]+1]
+    midPoint = pix2point(midPix, gt_LR)
+    midPoint_2 = pix2point(midPix_2, gt_LR)
+    transformer = Transformer.from_proj(Proj(proj_LR), Proj(proj_HR), always_xy=True)
+    x1, y1 = transformer.transform(midPoint[0], midPoint[1])
+    x2, y2 = transformer.transform(midPoint_2[0], midPoint_2[1])
+    xRes_LR_proj = x2 - x1
+    yRes_LR_proj = y2 - y1
+    # Now do the same with UL pixel to obtain low resolution geotransform in
+    # the new projection
+    UL_x, UL_y = transformer.transform(gt_LR[0], gt_LR[3])
+    gt_LR = [UL_x, xRes_LR_proj, 0, UL_y, 0, yRes_LR_proj]
 
     # Now subset to high resolution scene extent while not shifting pixels
-    gt_LR = getRasterInfo(out)[1]
-
     UL = pix2point(point2pix([extent[0], extent[3]], gt_LR, upperBound=False), gt_LR)
     BR = pix2point(point2pix([extent[2], extent[1]], gt_LR, upperBound=True), gt_LR)
-
     out = gdal.Warp("",
-                    out,
+                    lowResScene,
                     format="MEM",
                     dstSRS=proj_HR,
                     resampleAlg=gdal.GRA_NearestNeighbour,
+                    xRes=gt_LR[1],
+                    yRes=gt_LR[5],
                     outputBounds=[UL[0], BR[1], BR[0], UL[1]])
 
     return out
