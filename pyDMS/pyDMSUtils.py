@@ -21,7 +21,7 @@ def openRaster(raster):
         raster.GetProjection()
         openRaster = raster
     except AttributeError:
-        openRaster = gdal.Open(raster)
+        openRaster = gdal.Open(str(raster))
         closeOnExit = True
     return openRaster, closeOnExit
 
@@ -45,8 +45,8 @@ def resampleWithGdalWarp(srcFile, templateFile, outFile="", outFormat="MEM",
     proj, gt, sizeX, sizeY, extent, _ = getRasterInfo(templateFile)
 
     # Resample with GDAL warp
-    outDs = gdal.Warp(outFile,
-                      srcFile,
+    outDs = gdal.Warp(str(outFile),
+                      openRaster(srcFile)[0],
                       format=outFormat,
                       dstSRS=proj,
                       xRes=gt[1],
@@ -79,6 +79,7 @@ def pix2point(pix, gt):
 
 # save the data to geotiff or memory
 def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
+    outPath = str(outPath)
 
     # Save to memory first
     is_netCDF = False
@@ -206,7 +207,7 @@ def reprojectSubsetLowResScene(highResScene, lowResScene, resampleAlg=gdal.GRA_B
     UL = pix2point(point2pix([extent[0], extent[3]], gt_LR, upperBound=False), gt_LR)
     BR = pix2point(point2pix([extent[2], extent[1]], gt_LR, upperBound=True), gt_LR)
     out = gdal.Warp("",
-                    lowResScene,
+                    openRaster(lowResScene)[0],
                     format="MEM",
                     dstSRS=proj_HR,
                     resampleAlg=gdal.GRA_NearestNeighbour,
