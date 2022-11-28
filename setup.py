@@ -43,7 +43,7 @@ LONG_DESCRIPTION = read_file("README.md")
 SHORT_DESCRIPTION = "Python implementation of Data Mining Sharpener (DMS): a decision tree based"+\
                     " algorithm for sharpening (disaggregation) of low-resolution images using"+\
                     " high-resolution images."
-REQS = ['numpy>=1.10', 'gdal>=3.0', 'sklearn', 'scipy', 'numba', 'pyproj>2.2.0']
+REQS = ['numpy>=1.10', 'gdal>=3.0', 'scikit-learn', 'scipy', 'numba', 'pyproj>2.2.0']
 
 setup(
     name                  = "pyDMS",
