@@ -486,10 +486,13 @@ class DecisionTreeSharpener(object):
         # Temporarly get rid of NaN's
         nanInd = np.isnan(inData)
         inData[nanInd] = 0
-        outWindowData = np.empty((ysize, xsize))*np.nan
 
-        # Do the downscailing on the moving windows if there are any
+        outWindowData = np.empty((ysize, xsize))*np.nan
+        outFullData = np.empty((ysize, xsize))*np.nan
+        # Do the downscailing on the moving windows if there are any and also process the full
+        # scene using the same windows to optimize memory usage
         for i, extent in enumerate(self.windowExtents):
+            print(i)
             if self.reg[i] is not None:
                 [minX, minY] = utils.point2pix(extent[0], gt)  # UL
                 [minX, minY] = [max(minX, 0), max(minY, 0)]
@@ -498,12 +501,13 @@ class DecisionTreeSharpener(object):
                 windowInData = inData[minY:maxY, minX:maxX, :]
                 outWindowData[minY:maxY, minX:maxX] = \
                     self._doPredict(windowInData, self.reg[i])
+                if self.reg[-1] is not None:
+                    outFullData[minY:maxY, minX:maxX] = \
+                        self._doPredict(windowInData, self.reg[-1])
 
-        # Do the downscailing on the whole input image
-        if self.reg[-1] is not None:
+        # If there were no moving windows then do the downscailing on the whole input image
+        if np.all(np.isnan(outFullData)) and self.reg[-1] is not None:
             outFullData = self._doPredict(inData, self.reg[-1])
-        else:
-            outFullData = np.empty((ysize, xsize))*np.nan
 
         # Combine the windowed and whole image regressions
         # If there is no windowed regression just use the whole image regression
