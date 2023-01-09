@@ -6,6 +6,7 @@ Copyright: (C) 2017, Radoslaw Guzinski
 
 import math
 import os
+from multiprocessing import Pool
 
 import numpy as np
 from osgeo import gdal
@@ -744,6 +745,144 @@ class DecisionTreeSharpener(object):
 
         return residual_LR, gt_LR
 
+
+class CubistSharpener(DecisionTreeSharpener):
+    ''' Cubist (https://github.com/pjaselin/Cubist#readme) based sharpening (disaggregation) of
+    low-resolution images using high-resolution images. The implementation is mostly based on
+    [Gao2012] as implemented in DescisionTreeSharpener except that Decision Tree regressor is
+    replaced by Cubist regressor as in [Gao2012].
+
+    Cubist based regressor is trained with high-resolution data resampled to
+    low resolution and low-resolution data and then applied
+    directly to high-resolution data to obtain high-resolution representation
+    of the low-resolution data.
+
+    The implementation includes selecting training data based on homogeneity
+    statistics and using the homogeneity as weight factor ([Gao2012], section 2.2),
+    performing linear regression with samples located within each Cubist rule ([Gao2012],
+    section 2.1), performing local (moving window) and global regression and
+    combining them based on residuals ([Gao2012] section 2.3) and performing residual
+    analysis and bias correction ([Gao2012], section 2.4)
+
+    Parameters
+    ----------
+    highResFiles: list of strings
+        A list of file paths to high-resolution images to be used during the
+        training of the sharpener.
+
+    lowResFiles: list of strings
+        A list of file paths to low-resolution images to be used during the
+        training of the sharpener. There must be one low-resolution image
+        for each high-resolution image.
+
+    lowResQualityFiles: list of strings (optional, default: [])
+        A list of file paths to low-resolution quality images to be used to
+        mask out low-quality low-resolution pixels during training. If provided
+        there must be one quality image for each low-resolution image.
+
+    lowResGoodQualityFlags: list of integers (optional, default: [])
+        A list of values indicating which pixel values in the low-resolution
+        quality images should be considered as good quality.
+
+    cvHomogeneityThreshold: float (optional, default: 0.25)
+        A threshold of coeficient of variation below which high-resolution
+        pixels resampled to low-resolution are considered homogeneous and
+        usable during the training of the disaggregator.
+
+    movingWindowSize: integer (optional, default: 0)
+        The size of local regression moving window in low-resolution pixels. If
+        set to 0 then only global regression is performed.
+
+    disaggregatingTemperature: boolean (optional, default: False)
+        Flag indicating whether the parameter to be disaggregated is
+        temperature (e.g. land surface temperature). If that is the case then
+        at some points it needs to be converted into radiance. This is becasue
+        sensors measure energy, not temperature, plus radiance is the physical
+        measurements it makes sense to average, while radiometric temperature
+        behaviour is not linear.
+
+    n_processes: int (optional, default: 3)
+        Number of parallel processes to use during application of Cubist regression.
+
+    regressorOpt: dictionary (optional, default: {})
+        Options to pass to cubist regressor constructor See
+        https://github.com/pjaselin/Cubist#readme for details.
+
+    baggingRegressorOpt: dictionary (optional, default: {})
+        Not used with Cubist regression.
+
+
+    Returns
+    -------
+    None
+
+
+    References
+    ----------
+    .. [Gao2012] Gao, F., Kustas, W. P., & Anderson, M. C. (2012). A Data
+       Mining Approach for Sharpening Thermal Satellite Imagery over Land.
+       Remote Sensing, 4(11), 3287–3319. https://doi.org/10.3390/rs4113287
+    '''
+
+    def __init__(self,
+                 highResFiles,
+                 lowResFiles,
+                 lowResQualityFiles=[],
+                 lowResGoodQualityFlags=[],
+                 cvHomogeneityThreshold=0.25,
+                 movingWindowSize=0,
+                 disaggregatingTemperature=False,
+                 n_processes=3,
+                 regressorOpt={},
+                 baggingRegressorOpt={}):
+
+        # Move the import of cubist here because this library is not easy to
+        # install but this shouldn't prevent the use of other parts of pyDMS.
+        from cubist import Cubist
+
+        super(CubistSharpener, self).__init__(highResFiles,
+                                              lowResFiles,
+                                              lowResQualityFiles,
+                                              lowResGoodQualityFlags,
+                                              cvHomogeneityThreshold,
+                                              movingWindowSize,
+                                              disaggregatingTemperature,
+                                              regressorOpt=regressorOpt,
+                                              baggingRegressorOpt=baggingRegressorOpt)
+        self.n_processes = n_processes
+
+    def _doFit(self, goodData_LR, goodData_HR, weight, local):
+        ''' Private function. Fits the cubist regression.
+        '''
+
+        # For local regression constrain the number of rules - section 2.3
+        if local:
+            reg = Cubist(n_rules=5, n_committees=5)
+        else:
+            reg = Cubist(n_committees=5)
+        reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
+
+        return reg
+
+    def _doPredict(self, inData, reg):
+        ''' Private function. Applies the cubist regression. The free version of cubist does not
+        support native (C) parallelization so we do it in Python.
+        '''
+
+        origShape = inData.shape
+        if len(origShape) == 3:
+            bands = origShape[2]
+        else:
+            bands = 1
+        # Do the actual cubist regression
+        inData = inData.reshape((-1, bands))
+        chunks = np.array_split(inData, self.n_processes)
+        with Pool(processes=self.n_processes) as pool:
+            res_chunks = pool.map(reg.predict, chunks)
+        outData = np.concatenate(res_chunks)
+        outData = outData.reshape((origShape[0], origShape[1]))
+
+        return outData
 
 class NeuralNetworkSharpener(DecisionTreeSharpener):
     ''' Neural Network based sharpening (disaggregation) of low-resolution
