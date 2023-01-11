@@ -271,6 +271,28 @@ def _resampleHighResToLowRes(bandData_HR, ySize_LR, yRes_LR, yRes_HR, xSize_LR, 
     return aggregatedMean, aggregatedStd
 
 
+def resampleLowResToHighRes(lowResScene, highResScene, resampleAlg="cubic"):
+
+    lowResScene_resampled = resampleWithGdalWarp(lowResScene, highResScene,
+                                                 resampleAlg=resampleAlg)
+
+    data = lowResScene_resampled.GetRasterBand(1).ReadAsArray()
+    # Sometimes there can be 1 HR pixel NaN border arond LR invalid pixels due to resampling.
+    # Fuction below fixes this. Image border pixels are excluded due to numba stencil
+    # limitations.
+    data[1:-1, 1:-1] = removeEdgeNaNs(data)[1:-1, 1:-1]
+
+    # The resampled array might be slightly smaller then the high-res because
+    # of the subsetting of the low resolution scene. In that case just pad
+    # the missing values with neighbours.
+    highResShape = (getRasterInfo(highResScene)[3], getRasterInfo(highResScene)[2])
+    if highResShape != data.shape:
+        data = np.pad(data,
+                      ((0, highResShape[0]-data.shape[0]), (0, highResShape[1]-data.shape[1])),
+                      "edge")
+    return data
+
+
 @stencil(cval=1.0)
 def removeEdgeNaNs(a):
     if np.isnan(a[0, 0]) and (not np.isnan(a[-1, 0]) or not np.isnan(a[1, 0]) or

@@ -221,7 +221,7 @@ class DecisionTreeSharpener(object):
     ----------
     .. [Gao2012] Gao, F., Kustas, W. P., & Anderson, M. C. (2012). A Data
        Mining Approach for Sharpening Thermal Satellite Imagery over Land.
-       Remote Sensing, 4(11), 3287–3319. https://doi.org/10.3390/rs4113287
+       Remote Sensing, 4(11), 3287-3319. https://doi.org/10.3390/rs4113287
     '''
     def __init__(self,
                  highResFiles,
@@ -518,21 +518,28 @@ class DecisionTreeSharpener(object):
                                            highResFile.GetProjection(),
                                            "MEM",
                                            noDataValue=np.nan)
-            windowedResidual, _, _ = self._calculateResidual(outWindowScene, lowResScene)
+            windowedResidual_LR, gt_LR = self._calculateResidual(outWindowScene, lowResScene)
             outWindowScene = None
             outFullScene = utils.saveImg(outFullData,
                                          highResFile.GetGeoTransform(),
                                          highResFile.GetProjection(),
                                          "MEM",
                                          noDataValue=np.nan)
-            fullResidual, _, _ = self._calculateResidual(outFullScene, lowResScene)
-            outFullScene = None
+            fullResidual_LR, gt_LR = self._calculateResidual(outFullScene, lowResScene)
             lowResScene = None
             # windowed weight
-            ww = (1/windowedResidual)**2/((1/windowedResidual)**2 + (1/fullResidual)**2)
+            ww_LR = (1/windowedResidual_LR)**2/((1/windowedResidual_LR)**2 +
+                                                (1/fullResidual_LR)**2)
+            wwLowResScene = utils.saveImg(ww_LR,
+                                          gt_LR,
+                                          highResFile.GetProjection(),
+                                          "MEM",
+                                          noDataValue=np.nan)
+            ww = utils.resampleLowResToHighRes(wwLowResScene, outFullScene)
+            ww = np.clip(ww, 0.0, 1.0)
             # full weight
             fw = 1 - ww
-            outData = outWindowData*ww + outFullData*fw
+            outData = ((outWindowData**4)*ww + (outFullData**4)*fw)**0.25
         # Otherwised use just windowed regression
         else:
             outData = outWindowData
@@ -597,7 +604,13 @@ class DecisionTreeSharpener(object):
         else:
             quality_LR = None
 
-        residual_HR, residual_LR, gt_res = self._calculateResidual(scene_HR, scene_LR, quality_LR)
+        residual_LR, gt_res = self._calculateResidual(scene_HR, scene_LR, quality_LR)
+        residualImage = utils.saveImg(residual_LR,
+                                      gt_res,
+                                      scene_HR.GetProjection(),
+                                      "MEM",
+                                      noDataValue=np.nan)
+        residual_HR = utils.resampleLowResToHighRes(residualImage, scene_HR)
 
         if self.disaggregatingTemperature:
             if doCorrection:
@@ -611,6 +624,11 @@ class DecisionTreeSharpener(object):
                 correctedImage = None
             # Convert residual back to temperature for easier visualisation
             residual_LR = (residual_LR + 273.15**4)**0.25 - 273.15
+            residualImage = utils.saveImg(residual_LR,
+                                          gt_res,
+                                          scene_HR.GetProjection(),
+                                          "MEM",
+                                          noDataValue=np.nan)
         else:
             if doCorrection:
                 corrected = residual_HR + scene_HR.GetRasterBand(1).ReadAsArray()
@@ -621,12 +639,6 @@ class DecisionTreeSharpener(object):
                                                noDataValue=np.nan)
             else:
                 correctedImage = None
-
-        residualImage = utils.saveImg(residual_LR,
-                                      gt_res,
-                                      scene_HR.GetProjection(),
-                                      "MEM",
-                                      noDataValue=np.nan)
 
         print("LR residual bias: "+str(np.nanmean(residual_LR)))
         print("LR residual RMSD: "+str(np.nanmean(residual_LR**2)**0.5))
@@ -726,40 +738,7 @@ class DecisionTreeSharpener(object):
             # Find the residual (difference) between the two
             residual_LR = data_LR - resMean[:, :, 0]
 
-        # Smooth the residual and resample to high resolution
-        residual = utils.binomialSmoother(residual_LR)
-        residualDs = utils.saveImg(residual, subsetScene_LR.GetGeoTransform(),
-                                   subsetScene_LR.GetProjection(), "MEM", noDataValue=np.nan)
-        residualScene_BL = utils.resampleWithGdalWarp(residualDs, downscaledScene,
-                                                      resampleAlg="bilinear")
-        residualDs = None
-
-        residual = residualScene_BL.GetRasterBand(1).ReadAsArray()
-        # Sometimes there can be 1 HR pixel NaN border arond LR invalid pixels due to resampling.
-        # Fuction below fixes this. Image border pixels are excluded due to numba stencil
-        # limitations.
-        residual[1:-1, 1:-1] = utils.removeEdgeNaNs(residual)[1:-1, 1:-1]
-        residualScene_BL = None
-
-        # The residual array might be slightly smaller then the downscaled because
-        # of the subsetting of the low resolution scene. In that case just pad
-        # the missing values with neighbours.
-        downscaled = downscaledScene.GetRasterBand(1).ReadAsArray()
-        if downscaled.shape != residual.shape:
-            temp = np.zeros(downscaled.shape)
-            temp[:residual.shape[0], :residual.shape[1]] = residual
-            temp[residual.shape[0]:, :] = \
-                temp[2*(residual.shape[0] - downscaled.shape[0]):residual.shape[0] - downscaled.shape[0], :]
-            temp[:, residual.shape[1]:] = \
-                temp[:, 2*(residual.shape[1] - downscaled.shape[1]):residual.shape[1] - downscaled.shape[1]]
-
-            residual = temp
-
-        residualScene = None
-        subsetScene_LR = None
-        subsetQuality_LR = None
-
-        return residual, residual_LR, gt_LR
+        return residual_LR, gt_LR
 
 
 class NeuralNetworkSharpener(DecisionTreeSharpener):
@@ -845,7 +824,7 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
     ----------
     .. [Gao2012] Gao, F., Kustas, W. P., & Anderson, M. C. (2012). A Data
        Mining Approach for Sharpening Thermal Satellite Imagery over Land.
-       Remote Sensing, 4(11), 3287–3319. https://doi.org/10.3390/rs4113287
+       Remote Sensing, 4(11), 3287-3319. https://doi.org/10.3390/rs4113287
     '''
 
     def __init__(self,
