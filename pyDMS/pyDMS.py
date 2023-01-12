@@ -20,7 +20,7 @@ REG_sklearn_ann = 1
 
 
 class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
-    ''' Decision tree regressor with added linear (bayesian ridge) regression
+    ''' Decision tree regressor with added linear (ridge) regression
     for all the data points falling within each decision tree leaf node.
 
     Parameters
@@ -85,7 +85,7 @@ class DecisionTreeRegressorWithLinearLeafRegression(tree.DecisionTreeRegressor):
         leafValues = np.unique(predictedValues)
         for value in leafValues:
             ind = predictedValues == value
-            leafLinearRegrsion = linear_model.BayesianRidge()
+            leafLinearRegrsion = linear_model.Ridge()
             leafLinearRegrsion.fit(X[ind, :], y[ind])
             self.leafParameters[value] = {"linearRegression": leafLinearRegrsion,
                                           "max": np.max(y[ind]),
