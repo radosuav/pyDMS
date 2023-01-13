@@ -833,12 +833,14 @@ class CubistSharpener(DecisionTreeSharpener):
                  movingWindowSize=0,
                  disaggregatingTemperature=False,
                  n_processes=3,
+                 linearRegressionExtrapolationRatio=0.25,
                  regressorOpt={},
                  baggingRegressorOpt={}):
 
-        # Move the import of cubist here because this library is not easy to
-        # install but this shouldn't prevent the use of other parts of pyDMS.
-        from cubist import Cubist
+        regressorOpt.setdefault("n_committees", 5)
+        regressorOpt.setdefault("composite", True)
+        regressorOpt.setdefault("neighbors", 3)
+        regressorOpt["extrapolation"] = linearRegressionExtrapolationRatio
 
         super(CubistSharpener, self).__init__(highResFiles,
                                               lowResFiles,
@@ -847,6 +849,7 @@ class CubistSharpener(DecisionTreeSharpener):
                                               cvHomogeneityThreshold,
                                               movingWindowSize,
                                               disaggregatingTemperature,
+                                              linearRegressionExtrapolationRatio=linearRegressionExtrapolationRatio,
                                               regressorOpt=regressorOpt,
                                               baggingRegressorOpt=baggingRegressorOpt)
         self.n_processes = n_processes
@@ -855,11 +858,16 @@ class CubistSharpener(DecisionTreeSharpener):
         ''' Private function. Fits the cubist regression.
         '''
 
+        # Move the import of cubist here because this library is not easy to
+        # install but this shouldn't prevent the use of other parts of pyDMS.
+        from cubist import Cubist
+
         # For local regression constrain the number of rules - section 2.3
         if local:
-            reg = Cubist(n_rules=5, n_committees=5)
+            self.regressorOpt["n_rules"] = 5
         else:
-            reg = Cubist(n_committees=5)
+            self.regressorOpt["n_rules"] = 500
+        reg = Cubist(**self.regressorOpt)
         reg = reg.fit(goodData_HR, goodData_LR, sample_weight=weight)
 
         return reg
