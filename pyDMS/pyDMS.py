@@ -175,8 +175,8 @@ class DecisionTreeSharpener(object):
 
     cvHomogeneityThreshold: float (optional, default: 0)
         A threshold of coeficient of variation below which high-resolution
-        pixels resampled to low-resolution are considered homogeneous and
-        usable during the training of the disaggregator. If threshold is 0 or
+        pixels resampled to low-resolution are considered homogeneous. Non-homogenous pixels
+        get extra penalized during the training of the disaggregator. If threshold is 0 or
         negative then it is set automatically such that 80% of pixels are below
         it.
 
@@ -395,7 +395,7 @@ class DecisionTreeSharpener(object):
                     print('Homogeneity CV threshold: %.2f' % self.cvHomogeneityThreshold)
                 homogenousPix = np.logical_and(resCVWindow < self.cvHomogeneityThreshold,
                                                resCVWindow > 0)
-                goodPix = np.logical_and(homogenousPix, qualityPixWindow)
+                goodPix = qualityPixWindow
 
                 goodData_LR[i] = utils.appendNpArray(goodData_LR[i],
                                                      data_LR[rows, cols][goodPix])
@@ -405,6 +405,8 @@ class DecisionTreeSharpener(object):
                 # Also estimate weight given to each pixel as the inverse of its
                 # heterogeneity
                 w = 1/resCVWindow[goodPix]
+                w = (w - np.min(w)) / (np.max(w) - np.min(w))
+                w[~homogenousPix[goodPix]] = w[~homogenousPix[goodPix]] / 2
                 weight[i] = utils.appendNpArray(weight[i], w)
 
                 # Print some stats
@@ -821,7 +823,7 @@ class CubistSharpener(DecisionTreeSharpener):
     ----------
     .. [Gao2012] Gao, F., Kustas, W. P., & Anderson, M. C. (2012). A Data
        Mining Approach for Sharpening Thermal Satellite Imagery over Land.
-       Remote Sensing, 4(11), 3287–3319. https://doi.org/10.3390/rs4113287
+       Remote Sensing, 4(11), 3287-3319. https://doi.org/10.3390/rs4113287
     '''
 
     def __init__(self,
