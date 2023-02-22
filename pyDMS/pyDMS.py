@@ -395,7 +395,7 @@ class DecisionTreeSharpener(object):
                     print('Homogeneity CV threshold: %.2f' % self.cvHomogeneityThreshold)
                 homogenousPix = np.logical_and(resCVWindow < self.cvHomogeneityThreshold,
                                                resCVWindow > 0)
-                goodPix = qualityPixWindow
+                goodPix = np.logical_and(qualityPixWindow, resCVWindow > 0)
 
                 goodData_LR[i] = utils.appendNpArray(goodData_LR[i],
                                                      data_LR[rows, cols][goodPix])
@@ -403,7 +403,8 @@ class DecisionTreeSharpener(object):
                                                      resMean[rows, cols, :][goodPix, :], axis=0)
 
                 # Also estimate weight given to each pixel as the inverse of its
-                # heterogeneity
+                # heterogeneity. The most heterogenous (beyond CV treshold) pixels are extra
+                # penalized by having their weight halved.
                 w = 1/resCVWindow[goodPix]
                 w = (w - np.min(w)) / (np.max(w) - np.min(w))
                 w[~homogenousPix[goodPix]] = w[~homogenousPix[goodPix]] / 2
