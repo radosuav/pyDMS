@@ -184,6 +184,10 @@ class DecisionTreeSharpener(object):
         The size of local regression moving window in low-resolution pixels. If
         set to 0 then only global regression is performed.
 
+    minimumSampleNumber: integer (optional, default: 10)
+        The number of samples requried to train a regression model. Applicable both to local and
+        global regressions.
+
     disaggregatingTemperature: boolean (optional, default: False)
         Flag indicating whether the parameter to be disaggregated is
         temperature (e.g. land surface temperature). If that is the case then
@@ -231,6 +235,7 @@ class DecisionTreeSharpener(object):
                  lowResGoodQualityFlags=[],
                  cvHomogeneityThreshold=0,
                  movingWindowSize=0,
+                 minimumSampleNumber=10,
                  disaggregatingTemperature=False,
                  perLeafLinearRegression=True,
                  linearRegressionExtrapolationRatio=0.25,
@@ -272,6 +277,8 @@ class DecisionTreeSharpener(object):
         # then prediction window size (see section 2.3 of Gao paper)
         self.movingWindowExtension = self.movingWindowSize * 0.25
         self.windowExtents = []
+
+        self.minimumSampleNumber = minimumSampleNumber
 
         self.disaggregatingTemperature = disaggregatingTemperature
 
@@ -396,7 +403,8 @@ class DecisionTreeSharpener(object):
                 homogenousPix = np.logical_and(resCVWindow < self.cvHomogeneityThreshold,
                                                resCVWindow > 0)
                 goodPix = np.logical_and(qualityPixWindow, resCVWindow > 0)
-
+                if np.sum(goodPix) < self.minimumSampleNumber:
+                    goodPix = np.zeros(goodPix.shape).astype(bool)
                 goodData_LR[i] = utils.appendNpArray(goodData_LR[i],
                                                      data_LR[rows, cols][goodPix])
                 goodData_HR[i] = utils.appendNpArray(goodData_HR[i],
@@ -406,16 +414,17 @@ class DecisionTreeSharpener(object):
                 # heterogeneity. The most heterogenous (beyond CV treshold) pixels are extra
                 # penalized by having their weight halved.
                 w = 1/resCVWindow[goodPix]
-                w = (w - np.min(w)) / (np.max(w) - np.min(w))
-                w[~homogenousPix[goodPix]] = w[~homogenousPix[goodPix]] / 2
+                if w.size > 1:
+                    w = (w - np.min(w)) / (np.max(w) - np.min(w))
+                    w[~homogenousPix[goodPix]] = w[~homogenousPix[goodPix]] / 2
                 weight[i] = utils.appendNpArray(weight[i], w)
 
                 # Print some stats
-                if np.prod(data_LR[rows, cols][qualityPixWindow].shape) > 0:
-                    percentageUsedPixels = int(float(np.prod(goodData_LR[i].shape)) /
-                                               float(np.prod(data_LR[rows, cols][qualityPixWindow].shape)) * 100)
+                if goodData_LR[i].size > 0:
+                    percentageUsedPixels = int(float(goodData_LR[i].size) /
+                                               float(data_LR[rows, cols][qualityPixWindow].size) * 100)
                     print('Number of training elements for is ' +
-                          str(np.prod(goodData_LR[i].shape)) + ' representing ' +
+                          str(goodData_LR[i].size) + ' representing ' +
                           str(percentageUsedPixels)+'% of avaiable low-resolution data.')
 
             # Close all files
@@ -667,7 +676,7 @@ class DecisionTreeSharpener(object):
             self.regressorOpt["max_leaf_nodes"] = 10
         else:
             self.regressorOpt["max_leaf_nodes"] = 30
-        self.regressorOpt["min_samples_leaf"] = 10
+        self.regressorOpt["min_samples_leaf"] = min(self.minimumSampleNumber, 10)
 
         # If per leaf linear regression is used then use modified
         # DecisionTreeRegressor. Otherwise use the standard one.
@@ -795,6 +804,10 @@ class CubistSharpener(DecisionTreeSharpener):
     movingWindowSize: integer (optional, default: 0)
         The size of local regression moving window in low-resolution pixels. If
         set to 0 then only global regression is performed.
+
+    minimumSampleNumber: integer (optional, default: 10)
+        The number of samples requried to train a regression model. Applicable both to local and
+        global regressions.
 
     disaggregatingTemperature: boolean (optional, default: False)
         Flag indicating whether the parameter to be disaggregated is
@@ -942,6 +955,10 @@ class NeuralNetworkSharpener(DecisionTreeSharpener):
     movingWindowSize: integer (optional, default: 0)
         The size of local regression moving window in low-resolution pixels. If
         set to 0 then only global regression is performed.
+
+    minimumSampleNumber: integer (optional, default: 10)
+        The number of samples requried to train a regression model. Applicable both to local and
+        global regressions.
 
     disaggregatingTemperature: boolean (optional, default: False)
         Flag indicating whether the parameter to be disaggregated is
