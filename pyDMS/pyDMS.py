@@ -389,22 +389,24 @@ class DecisionTreeSharpener(object):
                 qualityPixWindow = qualityPix[rows, cols]
                 resCVWindow = resCV[rows, cols]
 
-                # Good pixels are those where low res data quality is good and
-                # high res data is homonogenous
-                if self.autoAdjustCvThreshold:
-                    g = np.logical_and.reduce((qualityPixWindow, resCVWindow < 1000,
-                                               resCVWindow > 0))
-                    if ~np.any(g):
-                        self.cvHomogeneityThreshold = 0
-                    else:
-                        self.cvHomogeneityThreshold = np.percentile(resCVWindow[g],
-                                                                    self.precentileThreshold)
-                    print('Homogeneity CV threshold: %.2f' % self.cvHomogeneityThreshold)
-                homogenousPix = np.logical_and(resCVWindow < self.cvHomogeneityThreshold,
-                                               resCVWindow > 0)
-                goodPix = np.logical_and(qualityPixWindow, resCVWindow > 0)
+                # Good pixels are those where both low and high resolution data exists
+                goodPix = np.logical_and.reduce((qualityPixWindow,
+                                                 resCVWindow > 0,
+                                                 resCVWindow < 1000))
+                # If number of good pixels is below threshold then do not train a model
                 if np.sum(goodPix) < self.minimumSampleNumber:
                     goodPix = np.zeros(goodPix.shape).astype(bool)
+
+                if self.autoAdjustCvThreshold:
+                    if ~np.any(goodPix):
+                        self.cvHomogeneityThreshold = 0
+                    else:
+                        self.cvHomogeneityThreshold = np.percentile(resCVWindow[goodPix],
+                                                                    self.precentileThreshold)
+                        print('Homogeneity CV threshold: %.2f' % self.cvHomogeneityThreshold)
+                homogenousPix = np.logical_and(resCVWindow < self.cvHomogeneityThreshold,
+                                               resCVWindow > 0)
+
                 goodData_LR[i] = utils.appendNpArray(goodData_LR[i],
                                                      data_LR[rows, cols][goodPix])
                 goodData_HR[i] = utils.appendNpArray(goodData_HR[i],
