@@ -558,7 +558,10 @@ class DecisionTreeSharpener(object):
             ww = np.clip(ww, 0.0, 1.0)
             # full weight
             fw = 1 - ww
-            outData = ((outWindowData**4)*ww + (outFullData**4)*fw)**0.25
+            if self.disaggregatingTemperature:
+                outData = ((outWindowData**4)*ww + (outFullData**4)*fw)**0.25
+            else:
+                outData = outWindowData*ww + outFullData*fw
         # Otherwised use just windowed regression
         else:
             outData = outWindowData
