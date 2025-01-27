@@ -634,33 +634,15 @@ class DecisionTreeSharpener(object):
                                       noDataValue=np.nan)
         residual_HR = utils.resampleLowResToHighRes(residualImage, scene_HR)
 
-        if self.disaggregatingTemperature:
-            if doCorrection:
-                corrected = (residual_HR + scene_HR.GetRasterBand(1).ReadAsArray()**4)**0.25
-                correctedImage = utils.saveImg(corrected,
-                                               scene_HR.GetGeoTransform(),
-                                               scene_HR.GetProjection(),
-                                               "MEM",
-                                               noDataValue=np.nan)
-            else:
-                correctedImage = None
-            # Convert residual back to temperature for easier visualisation
-            residual_LR = (residual_LR + 273.15**4)**0.25 - 273.15
-            residualImage = utils.saveImg(residual_LR,
-                                          gt_res,
-                                          scene_HR.GetProjection(),
-                                          "MEM",
-                                          noDataValue=np.nan)
+        if doCorrection:
+            corrected = residual_HR + utils.getRasterData(scene_HR.GetRasterBand(1))
+            correctedImage = utils.saveImg(corrected,
+                                           scene_HR.GetGeoTransform(),
+                                           scene_HR.GetProjection(),
+                                           "MEM",
+                                           noDataValue=np.nan)
         else:
-            if doCorrection:
-                corrected = residual_HR + scene_HR.GetRasterBand(1).ReadAsArray()
-                correctedImage = utils.saveImg(corrected,
-                                               scene_HR.GetGeoTransform(),
-                                               scene_HR.GetProjection(),
-                                               "MEM",
-                                               noDataValue=np.nan)
-            else:
-                correctedImage = None
+            correctedImage = None
 
         print("LR residual bias: "+str(np.nanmean(residual_LR)))
         print("LR residual RMSD: "+str(np.nanmean(residual_LR**2)**0.5))
@@ -753,7 +735,7 @@ class DecisionTreeSharpener(object):
             resMean, _ = utils.resampleHighResToLowRes(radianceScene,
                                                        subsetScene_LR)
             # Find the residual (difference) between the two)
-            residual_LR = data_LR**4 - resMean[:, :, 0]
+            residual_LR = data_LR - resMean[:, :, 0]**0.25
         else:
             resMean, _ = utils.resampleHighResToLowRes(downscaledScene,
                                                        subsetScene_LR)
