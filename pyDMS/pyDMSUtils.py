@@ -142,7 +142,7 @@ def saveImg(data, geotransform, proj, outPath, noDataValue=None, fieldNames=[]):
             ds.close()
             ds = gdal.Open('NETCDF:"'+outPath+'":'+fieldNames[0])
 
-    print('Saved ' + outPath)
+        print('Saved ' + outPath)
 
     return ds
 
