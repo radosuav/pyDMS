@@ -635,7 +635,7 @@ class DecisionTreeSharpener(object):
         residual_HR = utils.resampleLowResToHighRes(residualImage, scene_HR)
 
         if doCorrection:
-            corrected = residual_HR + utils.getRasterData(scene_HR.GetRasterBand(1))
+            corrected = residual_HR + scene_HR.GetRasterBand(1).ReadAsArray()
             correctedImage = utils.saveImg(corrected,
                                            scene_HR.GetGeoTransform(),
                                            scene_HR.GetProjection(),
