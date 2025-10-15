@@ -51,5 +51,3 @@ Temporary Items
 build
 dist
 pyDMS.egg-info
-uv.lock
-*.token

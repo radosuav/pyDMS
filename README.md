@@ -1,9 +1,3 @@
-[![PyPI version](https://img.shields.io/pypi/v/python_dms.svg?color=blue)](https://pypi.org/project/python_dms/)
-[![Tests](https://github.com/radosuav/pyDMS/actions/workflows/tests.yml/badge.svg)](https://github.com/radosuav/pyDMS/actions/workflows/tests.yml)
-[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-purple)](https://radosuav.github.io/pyDMS/)
-
-Read the documentation for more details: [https://radosuav.github.io/pyDMS/](https://radosuav.github.io/pyDMS/)
-
 # pyDMS
 Python implementation of Data Mining Sharpener (DMS): a decision tree based algorithm for
 sharpening (disaggregation) of low-resolution images using high-resolution images.
@@ -24,43 +18,10 @@ The implementation includes selecting training data based on homogeneity
 
 Additionally, the Decision Tree regressor can be replaced by Neural Network regressor.
 
-## Installation
-```python_dms``` requires GDAL to be installed on your system.
-Since GDAL provides compiled binaries that vary by platform, this package does not bundle them. You will need to install GDAL yourself before installing ```python_dms```.
+To install, download the project to your local system, enter the download directory and then type
 
-1. **Install GDAL**
-    #### macOS (Homebrew)
-    ```
-    brew install gdal
-    ```
-    #### Ubuntu / Debian
-    ```
-    sudo apt-get update
-    sudo apt-get install -y gdal-bin libgdal-dev
-    ```
-    #### Windows
-    Download and install GDAL from GIS Internals or install via conda:
-    ```
-    conda install -c conda-forge gdal
-    ``` 
+`python setup.py install`
 
-    You can verify your installation by running:
-    ```
-    gdalinfo --version
-    ``` 
-
-2. **Install ```python_dms```**
-
-    Once GDAL is installed and available in your environment, install python_dms with pip:
-    ```
-    pip install python_dms
-    ```
-
-    or download the project to your local system, enter the download directory and then type
-
-    `pip install .`
-
-## Usage
 For usage template see [run_pyDMS.py](/run_pyDMS.py).
 
 Copyright: (C) 2024 Radoslaw Guzinski and contributors.
