@@ -1,0 +1,2134 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../getting_started/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Reference - python_dms</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.84d31ad4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="python_dms" class="md-header__button md-logo" aria-label="python_dms" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            python_dms
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="python_dms" class="md-nav__button md-logo" aria-label="python_dms" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    python_dms
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Welcome to pyDMS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS" class="md-nav__link">
+    <span class="md-ellipsis">
+      pyDMS
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.CubistSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      CubistSharpener
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression" class="md-nav__link">
+    <span class="md-ellipsis">
+      DecisionTreeRegressorWithLinearLeafRegression
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DecisionTreeRegressorWithLinearLeafRegression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression.fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      fit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression.predict" class="md-nav__link">
+    <span class="md-ellipsis">
+      predict
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      DecisionTreeSharpener
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DecisionTreeSharpener">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener.applySharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      applySharpener
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener.residualAnalysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      residualAnalysis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener.trainSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      trainSharpener
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.NeuralNetworkSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      NeuralNetworkSharpener
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS" class="md-nav__link">
+    <span class="md-ellipsis">
+      pyDMS
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.CubistSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      CubistSharpener
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression" class="md-nav__link">
+    <span class="md-ellipsis">
+      DecisionTreeRegressorWithLinearLeafRegression
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DecisionTreeRegressorWithLinearLeafRegression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression.fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      fit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression.predict" class="md-nav__link">
+    <span class="md-ellipsis">
+      predict
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      DecisionTreeSharpener
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DecisionTreeSharpener">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener.applySharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      applySharpener
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener.residualAnalysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      residualAnalysis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.DecisionTreeSharpener.trainSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      trainSharpener
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyDMS.pyDMS.NeuralNetworkSharpener" class="md-nav__link">
+    <span class="md-ellipsis">
+      NeuralNetworkSharpener
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="reference">Reference</h1>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="pyDMS.pyDMS"></a>
+    <div class="doc doc-contents first">
+
+        <p>@author: Radoslaw Guzinski
+Copyright: (C) 2017, Radoslaw Guzinski</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyDMS.pyDMS.CubistSharpener" class="doc doc-heading">
+            <code>CubistSharpener</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="DecisionTreeSharpener (pyDMS.pyDMS.DecisionTreeSharpener)" href="#pyDMS.pyDMS.DecisionTreeSharpener">DecisionTreeSharpener</a></code></p>
+
+
+        <p>Cubist (https://github.com/pjaselin/Cubist#readme) based sharpening (disaggregation) of
+low-resolution images using high-resolution images. The implementation is mostly based on
+[Gao2012] as implemented in DescisionTreeSharpener except that Decision Tree regressor is
+replaced by Cubist regressor as in [Gao2012].</p>
+<p>Cubist based regressor is trained with high-resolution data resampled to
+low resolution and low-resolution data and then applied
+directly to high-resolution data to obtain high-resolution representation
+of the low-resolution data.</p>
+<p>The implementation includes selecting training data based on homogeneity
+statistics and using the homogeneity as weight factor ([Gao2012], section 2.2),
+performing linear regression with samples located within each Cubist rule ([Gao2012],
+section 2.1), performing local (moving window) and global regression and
+combining them based on residuals ([Gao2012] section 2.3) and performing residual
+analysis and bias correction ([Gao2012], section 2.4)</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>highResFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to high-resolution images to be used during the
+training of the sharpener.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to low-resolution images to be used during the
+training of the sharpener. There must be one low-resolution image
+for each high-resolution image.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResQualityFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to low-resolution quality images to be used to
+mask out low-quality low-resolution pixels during training. If provided
+there must be one quality image for each low-resolution image.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResGoodQualityFlags</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of values indicating which pixel values in the low-resolution
+quality images should be considered as good quality.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cvHomogeneityThreshold</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A threshold of coeficient of variation below which high-resolution
+pixels resampled to low-resolution are considered homogeneous and
+usable during the training of the disaggregator.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.25</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>movingWindowSize</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The size of local regression moving window in low-resolution pixels. If
+set to 0 then only global regression is performed.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>minimumSampleNumber</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of samples requried to train a regression model. Applicable both to local and
+global regressions.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>disaggregatingTemperature</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag indicating whether the parameter to be disaggregated is
+temperature (e.g. land surface temperature). If that is the case then
+at some points it needs to be converted into radiance. This is becasue
+sensors measure energy, not temperature, plus radiance is the physical
+measurements it makes sense to average, while radiometric temperature
+behaviour is not linear.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>n_processes</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of parallel processes to use during application of Cubist regression.</p>
+              </div>
+            </td>
+            <td>
+                  <code>3</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>regressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to cubist regressor constructor See
+https://github.com/pjaselin/Cubist#readme for details.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>baggingRegressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Not used with Cubist regression.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="references" open>
+  <summary>References</summary>
+  <p>.. [Gao2012] Gao, F., Kustas, W. P., &amp; Anderson, M. C. (2012). A Data
+   Mining Approach for Sharpening Thermal Satellite Imagery over Land.
+   Remote Sensing, 4(11), 3287-3319. https://doi.org/10.3390/rs4113287</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression" class="doc doc-heading">
+            <code>DecisionTreeRegressorWithLinearLeafRegression</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="sklearn.tree.DecisionTreeRegressor">DecisionTreeRegressor</span></code></p>
+
+
+        <p>Decision tree regressor with added linear (ridge) regression
+for all the data points falling within each decision tree leaf node.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>linearRegressionExtrapolationRatio</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A limit on extrapolation allowed in the per-leaf linear regressions.
+The ratio is multiplied by the range of values present in each leaves'
+training dataset and added (substracted) to the maxiumum (minimum)
+value.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.25</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>decisionTreeRegressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to DecisionTreeRegressor constructor. See
+http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
+for possibilities.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression.fit" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">fitOpt</span><span class="o">=</span><span class="p">{})</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Build a decision tree regressor from the training set (X, y).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>X</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The training input samples. Internally, it will be converted to
+dtype=np.float32 and if a sparse matrix is provided to a sparse
+csc_matrix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>y</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The target values (real numbers). Use dtype=np.float64 and
+order='C' for maximum efficiency.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sample_weight</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Sample weights. If None, then samples are equally weighted. Splits
+that would create child nodes with net zero or negative weight are
+ignored while searching for a split in each node.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>fitOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to DecisionTreeRegressor fit function. See
+http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
+for possibilities.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="Self">Self</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyDMS.pyDMS.DecisionTreeRegressorWithLinearLeafRegression.predict" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">predictOpt</span><span class="o">=</span><span class="p">{})</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Predict class or regression value for X.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>X</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The input samples. Internally, it will be converted to
+dtype=np.float32 and if a sparse matrix is provided to a sparse
+csr_matrix.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>predictOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to DecisionTreeRegressor predict function. See
+http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
+for possibilities.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>y</code></td>            <td>
+                  <code>array of shape = [n_samples] or [n_samples, n_outputs]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The predicted classes, or the predict values.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyDMS.pyDMS.DecisionTreeSharpener" class="doc doc-heading">
+            <code>DecisionTreeSharpener</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="object">object</span></code></p>
+
+
+        <p>Decision tree based sharpening (disaggregation) of low-resolution
+images using high-resolution images. The implementation is mostly based on [Gao2012].</p>
+<p>Decision tree based regressor is trained with high-resolution data resampled to
+low resolution and low-resolution data and then applied
+directly to high-resolution data to obtain high-resolution representation
+of the low-resolution data.</p>
+<p>The implementation includes selecting training data based on homogeneity
+statistics and using the homogeneity as weight factor ([Gao2012], section 2.2),
+performing linear regression with samples located within each regression
+tree leaf node ([Gao2012], section 2.1), using an ensemble of regression trees
+([Gao2012], section 2.1), performing local (moving window) and global regression and
+combining them based on residuals ([Gao2012] section 2.3) and performing residual
+analysis and bias correction ([Gao2012], section 2.4)</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>highResFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to high-resolution images to be used during the
+training of the sharpener.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to low-resolution images to be used during the
+training of the sharpener. There must be one low-resolution image
+for each high-resolution image.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResQualityFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to low-resolution quality images to be used to
+mask out low-quality low-resolution pixels during training. If provided
+there must be one quality image for each low-resolution image.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResGoodQualityFlags</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of values indicating which pixel values in the low-resolution
+quality images should be considered as good quality.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cvHomogeneityThreshold</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A threshold of coeficient of variation below which high-resolution
+pixels resampled to low-resolution are considered homogeneous. Non-homogenous pixels
+get extra penalized during the training of the disaggregator. If threshold is 0 or
+negative then it is set automatically such that 80% of pixels are below
+it.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>movingWindowSize</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The size of local regression moving window in low-resolution pixels. If
+set to 0 then only global regression is performed.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>minimumSampleNumber</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of samples requried to train a regression model. Applicable both to local and
+global regressions.</p>
+              </div>
+            </td>
+            <td>
+                  <code>10</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>disaggregatingTemperature</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag indicating whether the parameter to be disaggregated is
+temperature (e.g. land surface temperature). If that is the case then
+at some points it needs to be converted into radiance. This is becasue
+sensors measure energy, not temperature, plus radiance is the physical
+measurements it makes sense to average, while radiometric temperature
+behaviour is not linear.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>perLeafLinearRegression</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag indicating if linear regression should be performed on all data
+points falling within each regression tree leaf node.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>linearRegressionExtrapolationRatio</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A limit on extrapolation allowed in the per-leaf linear regressions.
+The ratio is multiplied by the range of values present in each leaves'
+training dataset and added (substracted) to the maxiumum (minimum)
+value.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.25</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>regressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to DecisionTreeRegressor constructor See
+http://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
+for possibilities. Note that max_leaf_nodes and min_samples_leaf
+parameters will beoverwritten in the code.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>baggingRegressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to BaggingRegressor constructor. See
+http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html
+for possibilities.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="references" open>
+  <summary>References</summary>
+  <p>.. [Gao2012] Gao, F., Kustas, W. P., &amp; Anderson, M. C. (2012). A Data
+   Mining Approach for Sharpening Thermal Satellite Imagery over Land.
+   Remote Sensing, 4(11), 3287-3319. https://doi.org/10.3390/rs4113287</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyDMS.pyDMS.DecisionTreeSharpener.applySharpener" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">applySharpener</span><span class="p">(</span><span class="n">highResFilename</span><span class="p">,</span> <span class="n">lowResFilename</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Apply the trained sharpener to a given high-resolution image to
+derive corresponding disaggregated low-resolution image. If local
+regressions were used during training then they will only be applied
+where their moving window extent overlaps with the high resolution
+image passed to this function. Global regression will be applied to the
+whole high-resolution image wihtout geographic constraints.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>highResFilename</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the high-resolution image file do be used during
+disaggregation.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResFilename</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the low-resolution image file corresponding to the
+high-resolution input file. If local regressions
+were trained and low-resolution filename is given then the local
+and global regressions will be combined based on residual values of
+the different regressions to the low-resolution image (see [Gao2012]
+2.3). If local regressions were trained and low-resolution
+filename is not given then only the local regressions will be used.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>outImage</code></td>            <td>
+                  <code>GDAL memory file object</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The file object contains an in-memory, georeferenced disaggregator
+output.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyDMS.pyDMS.DecisionTreeSharpener.residualAnalysis" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">residualAnalysis</span><span class="p">(</span><span class="n">disaggregatedFile</span><span class="p">,</span> <span class="n">lowResFilename</span><span class="p">,</span> <span class="n">lowResQualityFilename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doCorrection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Perform residual analysis and (optional) correction on the
+disaggregated file (see [Gao2012] 2.4).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>disaggregatedFile</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If string, path to the disaggregated image file; if gdal file
+object, the disaggregated image.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResFilename</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to the low-resolution image file corresponding to the
+high-resolution disaggregated image.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResQualityFilename</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Path to low-resolution quality image file. If provided then low
+quality values are masked out during residual analysis. Otherwise
+all values are considered to be of good quality.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>doCorrection</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag indication whether residual (bias) correction should be
+performed or not.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>residualImage</code></td>            <td>
+                  <code>GDAL memory file object</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The file object contains an in-memory, georeferenced residual image.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>correctedImage</code></td>            <td>
+                  <code>GDAL memory file object</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The file object contains an in-memory, georeferenced residual
+corrected disaggregated image, or None if doCorrection was set to
+False.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pyDMS.pyDMS.DecisionTreeSharpener.trainSharpener" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">trainSharpener</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Train the sharpener using high- and low-resolution input files
+and settings specified in the constructor. Local (moving window) and
+global regression decision trees are trained with high-resolution data
+resampled to low resolution and low-resolution data. The training
+dataset is selected based on homogeneity of resampled high-resolution
+data being below specified threshold and quality mask (if given) of
+low resolution data. The homogeneity statistics are also used as weight
+factors for the training samples (more homogenous - higher weight).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>None</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyDMS.pyDMS.NeuralNetworkSharpener" class="doc doc-heading">
+            <code>NeuralNetworkSharpener</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="DecisionTreeSharpener (pyDMS.pyDMS.DecisionTreeSharpener)" href="#pyDMS.pyDMS.DecisionTreeSharpener">DecisionTreeSharpener</a></code></p>
+
+
+        <p>Neural Network based sharpening (disaggregation) of low-resolution
+images using high-resolution images. The implementation is mostly based on [Gao2012] as
+implemented in DescisionTreeSharpener except that Decision Tree regressor is replaced by
+Neural Network regressor.</p>
+<p>Nerual network based regressor is trained with high-resolution data resampled to
+low resolution and low-resolution data and then applied
+directly to high-resolution data to obtain high-resolution representation
+of the low-resolution data.</p>
+<p>The implementation includes selecting training data based on homogeneity
+statistics and using the homogeneity as weight factor ([Gao2012], section 2.2),
+performing linear regression with samples located within each regression
+tree leaf node ([Gao2012], section 2.1), using an ensemble of regression trees
+([Gao2012], section 2.1), performing local (moving window) and global regression and
+combining them based on residuals ([Gao2012] section 2.3) and performing residual
+analysis and bias correction ([Gao2012], section 2.4)</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>highResFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to high-resolution images to be used during the
+training of the sharpener.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to low-resolution images to be used during the
+training of the sharpener. There must be one low-resolution image
+for each high-resolution image.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResQualityFiles</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of file paths to low-resolution quality images to be used to
+mask out low-quality low-resolution pixels during training. If provided
+there must be one quality image for each low-resolution image.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>lowResGoodQualityFlags</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of values indicating which pixel values in the low-resolution
+quality images should be considered as good quality.</p>
+              </div>
+            </td>
+            <td>
+                  <code>[]</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cvHomogeneityThreshold</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A threshold of coeficient of variation below which high-resolution
+pixels resampled to low-resolution are considered homogeneous and
+usable during the training of the disaggregator.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.25</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>movingWindowSize</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The size of local regression moving window in low-resolution pixels. If
+set to 0 then only global regression is performed.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>minimumSampleNumber</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The number of samples requried to train a regression model. Applicable both to local and
+global regressions.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>disaggregatingTemperature</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag indicating whether the parameter to be disaggregated is
+temperature (e.g. land surface temperature). If that is the case then
+at some points it needs to be converted into radiance. This is becasue
+sensors measure energy, not temperature, plus radiance is the physical
+measurements it makes sense to average, while radiometric temperature
+behaviour is not linear.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>regressionType</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag indicating whether scikit-neuralnetwork (flag value = REG_sknn_ann = 0)
+or scikit-learn (flag value = REG_sklearn_ann = 1) implementations of
+nearual network should be used. See
+https://github.com/aigamedev/scikit-neuralnetwork and
+http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html
+for details.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="pyDMS.pyDMS.REG_sknn_ann">REG_sknn_ann</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>regressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to neural network regressor constructor See links in
+regressionType parameter description for details.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>baggingRegressorOpt</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Options to pass to BaggingRegressor constructor. See
+http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html
+for possibilities.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="references" open>
+  <summary>References</summary>
+  <p>.. [Gao2012] Gao, F., Kustas, W. P., &amp; Anderson, M. C. (2012). A Data
+   Mining Approach for Sharpening Thermal Satellite Imagery over Land.
+   Remote Sensing, 4(11), 3287-3319. https://doi.org/10.3390/rs4113287</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
